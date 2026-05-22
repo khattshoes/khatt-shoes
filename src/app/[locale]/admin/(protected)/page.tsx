@@ -2,6 +2,7 @@ import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { getAdminUser } from "@/lib/auth/admin";
+import { LogoutButton } from "@/components/admin/logout-button";
 import { routing } from "@/i18n/routing";
 
 export default async function AdminDashboardPage({
@@ -31,6 +32,8 @@ export default async function AdminDashboardPage({
             {t.welcome}, {admin?.adminUser.full_name || admin?.adminUser.email}
           </p>
         </div>
+
+        <LogoutButton locale={locale} label={t.logout} />
       </div>
 
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
