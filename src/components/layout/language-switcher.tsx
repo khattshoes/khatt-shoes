@@ -9,16 +9,16 @@ export function LanguageSwitcher() {
   const pathname = usePathname();
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] p-1">
       {routing.locales.map((item) => (
         <Link
           key={item}
           href={pathname}
           locale={item}
-          className={`rounded-full px-3 py-1 text-xs uppercase transition ${
+          className={`rounded-full px-3 py-1 text-[11px] uppercase tracking-wider transition ${
             locale === item
               ? "bg-[#D6C2A8] text-black"
-              : "border border-white/15 text-white/60 hover:border-[#D6C2A8] hover:text-[#D6C2A8]"
+              : "text-white/50 hover:text-[#D6C2A8]"
           }`}
         >
           {item}
