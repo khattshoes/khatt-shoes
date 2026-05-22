@@ -175,6 +175,14 @@
 "colorRu": "Цвет RU",
 "sizeRangeAz": "Размеры AZ",
 "sizeRangeEn": "Размеры EN",
-"sizeRangeRu": "Размеры RU"
+"sizeRangeRu": "Размеры RU",
+"variants": "Размеры",
+"addVariant": "Добавить размер",
+"deleteVariant": "Удалить размер",
+"size": "Размер",
+"variantSku": "SKU варианта",
+"priceAdjustment": "Разница в цене",
+"variantStock": "Остаток размера",
+"noVariants": "Размеры пока не добавлены"
 }
 }

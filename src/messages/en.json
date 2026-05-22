@@ -175,6 +175,14 @@
 "colorRu": "Color RU",
 "sizeRangeAz": "Size range AZ",
 "sizeRangeEn": "Size range EN",
-"sizeRangeRu": "Size range RU"
+"sizeRangeRu": "Size range RU",
+"variants": "Sizes",
+"addVariant": "Add size",
+"deleteVariant": "Delete size",
+"size": "Size",
+"variantSku": "Variant SKU",
+"priceAdjustment": "Price adjustment",
+"variantStock": "Size stock",
+"noVariants": "No sizes added yet"
 }
 }

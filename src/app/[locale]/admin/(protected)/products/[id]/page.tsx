@@ -10,6 +10,8 @@ import {
   deleteProductAction,
   uploadProductImageAction,
   deleteProductImageAction,
+  addProductVariantAction,
+  deleteProductVariantAction,
 } from "./actions";
 import azMessages from "@/messages/az.json";
 import enMessages from "@/messages/en.json";
@@ -42,6 +44,16 @@ type ProductImageRow = {
   is_primary: boolean;
 };
 
+type ProductVariantRow = {
+  id: string;
+  size: string;
+  sku: string | null;
+  price_adjustment: number;
+  stock_quantity: number;
+  sort_order: number;
+  is_active: boolean;
+};
+
 type ProductRow = {
   id: string;
   category_id: string | null;
@@ -56,6 +68,7 @@ type ProductRow = {
   is_custom_available: boolean;
   product_translations: TranslationRow[];
   product_images: ProductImageRow[];
+  product_variants: ProductVariantRow[];
 };
 
 function getTranslation(product: ProductRow, locale: Locale): TranslationRow {
@@ -128,6 +141,15 @@ export default async function EditProductPage({
           alt_text,
           sort_order,
           is_primary
+        ),
+        product_variants (
+          id,
+          size,
+          sku,
+          price_adjustment,
+          stock_quantity,
+          sort_order,
+          is_active
         )
       `
       )
@@ -152,6 +174,10 @@ export default async function EditProductPage({
   const az = getTranslation(productRow, "az");
   const en = getTranslation(productRow, "en");
   const ru = getTranslation(productRow, "ru");
+
+  const sortedVariants = [...productRow.product_variants].sort(
+    (a, b) => a.sort_order - b.sort_order
+  );
 
   return (
     <main className="mx-auto max-w-5xl px-5 py-10 sm:px-6 lg:px-8">
@@ -317,6 +343,99 @@ export default async function EditProductPage({
           {t.updateProduct}
         </button>
       </form>
+
+      <section className="mt-8 rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
+        <h2 className="mb-6 text-xl font-semibold">{t.variants}</h2>
+
+        {sortedVariants.length ? (
+          <div className="mb-8 overflow-hidden rounded-2xl border border-white/10">
+            <table className="w-full min-w-[720px] text-left text-sm">
+              <thead className="border-b border-white/10 text-xs uppercase tracking-[0.18em] text-white/40">
+                <tr>
+                  <th className="px-5 py-4">{t.size}</th>
+                  <th className="px-5 py-4">{t.variantSku}</th>
+                  <th className="px-5 py-4">{t.priceAdjustment}</th>
+                  <th className="px-5 py-4">{t.variantStock}</th>
+                  <th className="px-5 py-4">{t.actions}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                {sortedVariants.map((variant) => (
+                  <tr key={variant.id} className="text-white/70">
+                    <td className="px-5 py-4 font-medium text-white">
+                      {variant.size}
+                    </td>
+                    <td className="px-5 py-4">{variant.sku || "-"}</td>
+                    <td className="px-5 py-4">
+                      {variant.price_adjustment} {productRow.currency}
+                    </td>
+                    <td className="px-5 py-4">{variant.stock_quantity}</td>
+                    <td className="px-5 py-4">
+                      <form action={deleteProductVariantAction}>
+                        <input type="hidden" name="locale" value={currentLocale} />
+                        <input type="hidden" name="product_id" value={productRow.id} />
+                        <input type="hidden" name="variant_id" value={variant.id} />
+                        <button
+                          type="submit"
+                          className="text-red-300 transition hover:text-red-200"
+                        >
+                          {t.deleteVariant}
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="mb-8 rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-sm text-white/45">
+            {t.noVariants}
+          </p>
+        )}
+
+        <form
+          action={addProductVariantAction}
+          className="grid gap-5 md:grid-cols-2"
+        >
+          <input type="hidden" name="locale" value={currentLocale} />
+          <input type="hidden" name="product_id" value={productRow.id} />
+
+          <Input label={t.size} name="size" required placeholder="42" />
+          <Input
+            label={t.variantSku}
+            name="variant_sku"
+            placeholder="KHATT-OXF-42"
+          />
+          <Input
+            label={t.priceAdjustment}
+            name="price_adjustment"
+            type="number"
+            defaultValue="0"
+          />
+          <Input
+            label={t.variantStock}
+            name="variant_stock"
+            type="number"
+            defaultValue="0"
+          />
+          <Input
+            label={t.sortOrder}
+            name="sort_order"
+            type="number"
+            defaultValue="0"
+          />
+
+          <div className="md:col-span-2">
+            <button
+              type="submit"
+              className="rounded-full bg-[#D6C2A8] px-8 py-4 text-sm font-medium text-black transition hover:bg-[#c4ad90]"
+            >
+              {t.addVariant}
+            </button>
+          </div>
+        </form>
+      </section>
 
       <section className="mt-8 rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
         <h2 className="mb-6 text-xl font-semibold">{t.images}</h2>

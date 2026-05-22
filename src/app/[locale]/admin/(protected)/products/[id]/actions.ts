@@ -299,3 +299,74 @@ function getStoragePathFromPublicUrl(url: string) {
 
   return path || null;
 }
+export async function addProductVariantAction(formData: FormData) {
+  const admin = await getAdminUser();
+
+  if (!admin) {
+    throw new Error("Unauthorized");
+  }
+
+  const locale = getSafeLocale(formData.get("locale"));
+  const productId = requiredString(formData.get("product_id"));
+  const size = requiredString(formData.get("size"));
+  const supabase = await createClient();
+
+  if (!productId || !size) {
+    throw new Error("Missing variant data");
+  }
+
+  const { error } = await supabase.from("product_variants").insert({
+    product_id: productId,
+    size,
+    sku: optionalString(formData.get("variant_sku")),
+    price_adjustment: numberValue(formData.get("price_adjustment")),
+    stock_quantity: numberValue(formData.get("variant_stock")),
+    sort_order: numberValue(formData.get("sort_order")),
+    is_active: true,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath(`/${locale}/admin/products/${productId}`);
+
+  redirect({
+    href: `/admin/products/${productId}`,
+    locale,
+  });
+}
+
+export async function deleteProductVariantAction(formData: FormData) {
+  const admin = await getAdminUser();
+
+  if (!admin) {
+    throw new Error("Unauthorized");
+  }
+
+  const locale = getSafeLocale(formData.get("locale"));
+  const productId = requiredString(formData.get("product_id"));
+  const variantId = requiredString(formData.get("variant_id"));
+  const supabase = await createClient();
+
+  if (!productId || !variantId) {
+    throw new Error("Missing variant ID");
+  }
+
+  const { error } = await supabase
+    .from("product_variants")
+    .delete()
+    .eq("id", variantId)
+    .eq("product_id", productId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath(`/${locale}/admin/products/${productId}`);
+
+  redirect({
+    href: `/admin/products/${productId}`,
+    locale,
+  });
+}

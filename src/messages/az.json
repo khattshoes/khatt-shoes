@@ -175,7 +175,15 @@
 "colorRu": "Rəng RU",
 "sizeRangeAz": "Ölçü aralığı AZ",
 "sizeRangeEn": "Ölçü aralığı EN",
-"sizeRangeRu": "Ölçü aralığı RU"
+"sizeRangeRu": "Ölçü aralığı RU",
+"variants": "Ölçülər",
+"addVariant": "Ölçü əlavə et",
+"deleteVariant": "Ölçünü sil",
+"size": "Ölçü",
+"variantSku": "Variant SKU",
+"priceAdjustment": "Qiymət fərqi",
+"variantStock": "Ölçü stoku",
+"noVariants": "Hələ ölçü əlavə edilməyib"
   
 }
   
