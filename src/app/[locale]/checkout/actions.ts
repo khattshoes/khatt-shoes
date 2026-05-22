@@ -1,12 +1,13 @@
 "use server";
 
 import { redirect } from "@/i18n/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { routing, type Locale } from "@/i18n/routing";
+import { createClient } from "@/lib/supabase/server";
 
 type CheckoutItem = {
   productId: string;
   variantId: string;
+  name: string;
   size: string;
   price: number;
   quantity: number;
@@ -43,6 +44,7 @@ function parseItems(value: FormDataEntryValue | null): CheckoutItem[] {
       .map((item) => ({
         productId: String(item.productId || ""),
         variantId: String(item.variantId || ""),
+        name: String(item.name || ""),
         size: String(item.size || ""),
         price: Number(item.price || 0),
         quantity: Number(item.quantity || 0),
@@ -51,6 +53,7 @@ function parseItems(value: FormDataEntryValue | null): CheckoutItem[] {
         (item) =>
           item.productId &&
           item.variantId &&
+          item.name &&
           item.size &&
           item.price >= 0 &&
           item.quantity > 0
@@ -69,7 +72,7 @@ export async function createCheckoutOrderAction(formData: FormData) {
   const items = parseItems(formData.get("items"));
 
   if (!customerName || !customerPhone || !items.length) {
-    redirect({
+    return redirect({
       href: "/checkout?error=missing",
       locale,
     });
@@ -85,7 +88,12 @@ export async function createCheckoutOrderAction(formData: FormData) {
     .in("id", variantIds);
 
   if (variantsError) {
-    throw new Error(variantsError.message);
+    console.error("Checkout variants error:", variantsError.message);
+
+    return redirect({
+      href: "/checkout?error=server",
+      locale,
+    });
   }
 
   for (const item of items) {
@@ -100,7 +108,7 @@ export async function createCheckoutOrderAction(formData: FormData) {
       !variant.is_active ||
       variant.stock_quantity < item.quantity
     ) {
-      redirect({
+      return redirect({
         href: "/checkout?error=stock",
         locale,
       });
@@ -119,21 +127,29 @@ export async function createCheckoutOrderAction(formData: FormData) {
       customer_phone: customerPhone,
       customer_email: customerEmail,
       customer_note: customerNote,
-      status: "pending",
+      status: "new",
       total_amount: totalAmount,
       currency: "AZN",
     })
     .select("id")
     .single();
 
-  if (orderError || !order) {
-    throw new Error(orderError?.message || "Order could not be created");
+  if (orderError || !order?.id) {
+    console.error("Checkout order insert error:", orderError?.message);
+
+    return redirect({
+      href: "/checkout?error=server",
+      locale,
+    });
   }
 
+  const orderId = order.id;
+
   const orderItems = items.map((item) => ({
-    order_id: order.id,
+    order_id: orderId,
     product_id: item.productId,
     product_variant_id: item.variantId,
+    product_name: item.name,
     size: item.size,
     quantity: item.quantity,
     unit_price: item.price,
@@ -145,7 +161,12 @@ export async function createCheckoutOrderAction(formData: FormData) {
     .insert(orderItems);
 
   if (orderItemsError) {
-    throw new Error(orderItemsError.message);
+    console.error("Checkout order items insert error:", orderItemsError.message);
+
+    return redirect({
+      href: "/checkout?error=server",
+      locale,
+    });
   }
 
   for (const item of items) {
@@ -153,18 +174,29 @@ export async function createCheckoutOrderAction(formData: FormData) {
       (variantItem) => variantItem.id === item.variantId
     );
 
-    if (variant) {
-      await supabase
-        .from("product_variants")
-        .update({
-          stock_quantity: variant.stock_quantity - item.quantity,
-        })
-        .eq("id", item.variantId);
+    if (!variant) {
+      continue;
+    }
+
+    const { error: stockUpdateError } = await supabase
+      .from("product_variants")
+      .update({
+        stock_quantity: variant.stock_quantity - item.quantity,
+      })
+      .eq("id", item.variantId);
+
+    if (stockUpdateError) {
+      console.error("Checkout stock update error:", stockUpdateError.message);
+
+      return redirect({
+        href: "/checkout?error=server",
+        locale,
+      });
     }
   }
 
-  redirect({
-    href: `/checkout/success?order=${order.id}`,
+  return redirect({
+    href: `/checkout/success?order=${orderId}`,
     locale,
   });
 }

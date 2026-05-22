@@ -206,6 +206,7 @@ export function CheckoutClient({
               items.map((item) => ({
                 productId: item.productId,
                 variantId: item.variantId,
+                name: item.name,
                 size: item.size,
                 price: item.price,
                 quantity: item.quantity,
