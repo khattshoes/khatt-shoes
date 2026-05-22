@@ -166,7 +166,16 @@
 "deleteImage": "Şəkli sil",
 "noImages": "Hələ şəkil yoxdur",
 "imageFile": "Şəkil faylı",
-"uploadImage": "Şəkil yüklə"
+"uploadImage": "Şəkil yüklə",
+"materialAz": "Material AZ",
+"materialEn": "Material EN",
+"materialRu": "Material RU",
+"colorAz": "Rəng AZ",
+"colorEn": "Rəng EN",
+"colorRu": "Rəng RU",
+"sizeRangeAz": "Ölçü aralığı AZ",
+"sizeRangeEn": "Ölçü aralığı EN",
+"sizeRangeRu": "Ölçü aralığı RU"
   
 }
   

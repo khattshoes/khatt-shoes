@@ -166,6 +166,15 @@
 "deleteImage": "Удалить изображение",
 "noImages": "Пока нет изображений",
 "imageFile": "Файл изображения",
-"uploadImage": "Загрузить изображение"
+"uploadImage": "Загрузить изображение",
+"materialAz": "Материал AZ",
+"materialEn": "Материал EN",
+"materialRu": "Материал RU",
+"colorAz": "Цвет AZ",
+"colorEn": "Цвет EN",
+"colorRu": "Цвет RU",
+"sizeRangeAz": "Размеры AZ",
+"sizeRangeEn": "Размеры EN",
+"sizeRangeRu": "Размеры RU"
 }
 }

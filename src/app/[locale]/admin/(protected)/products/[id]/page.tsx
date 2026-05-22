@@ -29,6 +29,9 @@ type TranslationRow = {
   name: string;
   short_description: string | null;
   description: string | null;
+  material: string | null;
+  color: string | null;
+  size_range: string | null;
 };
 
 type ProductImageRow = {
@@ -51,20 +54,20 @@ type ProductRow = {
   stock_quantity: number;
   is_featured: boolean;
   is_custom_available: boolean;
-  material: string | null;
-  color: string | null;
-  size_range: string | null;
   product_translations: TranslationRow[];
   product_images: ProductImageRow[];
 };
 
-function getTranslation(product: ProductRow, locale: Locale) {
+function getTranslation(product: ProductRow, locale: Locale): TranslationRow {
   return (
     product.product_translations.find((item) => item.locale === locale) ?? {
       locale,
       name: "",
       short_description: "",
       description: "",
+      material: "",
+      color: "",
+      size_range: "",
     }
   );
 }
@@ -110,14 +113,14 @@ export default async function EditProductPage({
         stock_quantity,
         is_featured,
         is_custom_available,
-        material,
-        color,
-        size_range,
         product_translations (
           locale,
           name,
           short_description,
-          description
+          description,
+          material,
+          color,
+          size_range
         ),
         product_images (
           id,
@@ -174,11 +177,32 @@ export default async function EditProductPage({
           </h2>
 
           <div className="grid gap-5 md:grid-cols-2">
-            <Input label={t.slug} name="slug" required defaultValue={productRow.slug} />
+            <Input
+              label={t.slug}
+              name="slug"
+              required
+              defaultValue={productRow.slug}
+            />
             <Input label={t.sku} name="sku" defaultValue={productRow.sku ?? ""} />
-            <Input label={t.price} name="price" type="number" required defaultValue={String(productRow.price)} />
-            <Input label={t.oldPrice} name="old_price" type="number" defaultValue={productRow.old_price ? String(productRow.old_price) : ""} />
-            <Input label={t.currency} name="currency" required defaultValue={productRow.currency} />
+            <Input
+              label={t.price}
+              name="price"
+              type="number"
+              required
+              defaultValue={String(productRow.price)}
+            />
+            <Input
+              label={t.oldPrice}
+              name="old_price"
+              type="number"
+              defaultValue={productRow.old_price ? String(productRow.old_price) : ""}
+            />
+            <Input
+              label={t.currency}
+              name="currency"
+              required
+              defaultValue={productRow.currency}
+            />
 
             <label className="block">
               <span className="mb-2 block text-sm text-white/60">
@@ -223,15 +247,25 @@ export default async function EditProductPage({
               </select>
             </label>
 
-            <Input label={t.stock} name="stock_quantity" type="number" defaultValue={String(productRow.stock_quantity)} />
-            <Input label={t.material} name="material" defaultValue={productRow.material ?? ""} />
-            <Input label={t.color} name="color" defaultValue={productRow.color ?? ""} />
-            <Input label={t.sizeRange} name="size_range" defaultValue={productRow.size_range ?? ""} />
+            <Input
+              label={t.stock}
+              name="stock_quantity"
+              type="number"
+              defaultValue={String(productRow.stock_quantity)}
+            />
           </div>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <Checkbox label={t.isFeatured} name="is_featured" defaultChecked={productRow.is_featured} />
-            <Checkbox label={t.isCustomAvailable} name="is_custom_available" defaultChecked={productRow.is_custom_available} />
+            <Checkbox
+              label={t.isFeatured}
+              name="is_featured"
+              defaultChecked={productRow.is_featured}
+            />
+            <Checkbox
+              label={t.isCustomAvailable}
+              name="is_custom_available"
+              defaultChecked={productRow.is_custom_available}
+            />
           </div>
         </section>
 
@@ -245,20 +279,31 @@ export default async function EditProductPage({
               nameLabel={t.nameAz}
               shortLabel={t.shortDescriptionAz}
               descriptionLabel={t.descriptionAz}
+              materialLabel={t.materialAz}
+              colorLabel={t.colorAz}
+              sizeRangeLabel={t.sizeRangeAz}
               suffix="az"
               translation={az}
             />
+
             <TranslationBlock
               nameLabel={t.nameEn}
               shortLabel={t.shortDescriptionEn}
               descriptionLabel={t.descriptionEn}
+              materialLabel={t.materialEn}
+              colorLabel={t.colorEn}
+              sizeRangeLabel={t.sizeRangeEn}
               suffix="en"
               translation={en}
             />
+
             <TranslationBlock
               nameLabel={t.nameRu}
               shortLabel={t.shortDescriptionRu}
               descriptionLabel={t.descriptionRu}
+              materialLabel={t.materialRu}
+              colorLabel={t.colorRu}
+              sizeRangeLabel={t.sizeRangeRu}
               suffix="ru"
               translation={ru}
             />
@@ -337,7 +382,7 @@ export default async function EditProductPage({
 
           <label className="block">
             <span className="mb-2 block text-sm text-white/60">
-              {t.imageFile || "Image file"}
+              {t.imageFile}
             </span>
             <input
               name="image_file"
@@ -357,7 +402,7 @@ export default async function EditProductPage({
               type="submit"
               className="rounded-full bg-[#D6C2A8] px-8 py-4 text-sm font-medium text-black transition hover:bg-[#c4ad90]"
             >
-              {t.uploadImage || "Upload image"}
+              {t.uploadImage}
             </button>
           </div>
         </form>
@@ -434,12 +479,18 @@ function TranslationBlock({
   nameLabel,
   shortLabel,
   descriptionLabel,
+  materialLabel,
+  colorLabel,
+  sizeRangeLabel,
   suffix,
   translation,
 }: {
   nameLabel: string;
   shortLabel: string;
   descriptionLabel: string;
+  materialLabel: string;
+  colorLabel: string;
+  sizeRangeLabel: string;
   suffix: Locale;
   translation: TranslationRow;
 }) {
@@ -470,6 +521,24 @@ function TranslationBlock({
           className="w-full rounded-2xl border border-white/10 bg-black/30 px-5 py-4 text-white outline-none transition focus:border-[#D6C2A8]"
         />
       </label>
+
+      <div className="mt-5 grid gap-5 md:grid-cols-3">
+        <Input
+          label={materialLabel}
+          name={`material_${suffix}`}
+          defaultValue={translation.material ?? ""}
+        />
+        <Input
+          label={colorLabel}
+          name={`color_${suffix}`}
+          defaultValue={translation.color ?? ""}
+        />
+        <Input
+          label={sizeRangeLabel}
+          name={`size_range_${suffix}`}
+          defaultValue={translation.size_range ?? ""}
+        />
+      </div>
     </div>
   );
 }

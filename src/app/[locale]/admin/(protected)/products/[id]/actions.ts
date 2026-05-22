@@ -74,29 +74,38 @@ export async function updateProductAction(formData: FormData) {
     throw new Error(productError.message);
   }
 
-  const translations = [
-    {
-      product_id: productId,
-      locale: "az",
-      name: nameAz,
-      short_description: optionalString(formData.get("short_description_az")),
-      description: optionalString(formData.get("description_az")),
-    },
-    {
-      product_id: productId,
-      locale: "en",
-      name: nameEn,
-      short_description: optionalString(formData.get("short_description_en")),
-      description: optionalString(formData.get("description_en")),
-    },
-    {
-      product_id: productId,
-      locale: "ru",
-      name: nameRu,
-      short_description: optionalString(formData.get("short_description_ru")),
-      description: optionalString(formData.get("description_ru")),
-    },
-  ];
+const translations = [
+  {
+    product_id: productId,
+    locale: "az",
+    name: nameAz,
+    short_description: optionalString(formData.get("short_description_az")),
+    description: optionalString(formData.get("description_az")),
+    material: optionalString(formData.get("material_az")),
+    color: optionalString(formData.get("color_az")),
+    size_range: optionalString(formData.get("size_range_az")),
+  },
+  {
+    product_id: productId,
+    locale: "en",
+    name: nameEn,
+    short_description: optionalString(formData.get("short_description_en")),
+    description: optionalString(formData.get("description_en")),
+    material: optionalString(formData.get("material_en")),
+    color: optionalString(formData.get("color_en")),
+    size_range: optionalString(formData.get("size_range_en")),
+  },
+  {
+    product_id: productId,
+    locale: "ru",
+    name: nameRu,
+    short_description: optionalString(formData.get("short_description_ru")),
+    description: optionalString(formData.get("description_ru")),
+    material: optionalString(formData.get("material_ru")),
+    color: optionalString(formData.get("color_ru")),
+    size_range: optionalString(formData.get("size_range_ru")),
+  },
+];
 
   const { error: translationError } = await supabase
     .from("product_translations")

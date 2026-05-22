@@ -166,6 +166,15 @@
 "deleteImage": "Delete image",
 "noImages": "No images yet",
 "imageFile": "Image file",
-"uploadImage": "Upload image"
+"uploadImage": "Upload image",
+"materialAz": "Material AZ",
+"materialEn": "Material EN",
+"materialRu": "Material RU",
+"colorAz": "Color AZ",
+"colorEn": "Color EN",
+"colorRu": "Color RU",
+"sizeRangeAz": "Size range AZ",
+"sizeRangeEn": "Size range EN",
+"sizeRangeRu": "Size range RU"
 }
 }

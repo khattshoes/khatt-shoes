@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/shared/page-hero";
@@ -13,7 +15,6 @@ type ProductRow = {
   slug: string;
   price: number;
   currency: string;
-  status: string;
   product_translations: {
     locale: Locale;
     name: string;
@@ -53,7 +54,6 @@ export default async function ShopPage({
       slug,
       price,
       currency,
-      status,
       product_translations (
         locale,
         name,
@@ -71,10 +71,10 @@ export default async function ShopPage({
     .order("created_at", { ascending: false });
 
   if (error) {
-    throw new Error(error.message);
+    console.error("Shop products error:", error.message);
   }
 
-  const products = (data ?? []) as ProductRow[];
+  const products = error ? [] : ((data ?? []) as ProductRow[]);
 
   return (
     <main className="bg-[#0D0D0D] text-[#F5F3EF]">
@@ -125,15 +125,17 @@ export default async function ShopPage({
 
                 return (
                   <Link
-  key={product.id}
-  href={`/shop/${product.slug}`}
-  className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#111]"
->
+                    key={product.id}
+                    href={`/shop/${product.slug}`}
+                    className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#111]"
+                  >
                     <div className="relative aspect-[4/3] overflow-hidden bg-[#151515]">
                       {image?.image_url ? (
                         <img
                           src={image.image_url}
-                          alt={image.alt_text || translation?.name || product.slug}
+                          alt={
+                            image.alt_text || translation?.name || product.slug
+                          }
                           className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                         />
                       ) : (
@@ -162,7 +164,11 @@ export default async function ShopPage({
             </div>
           ) : (
             <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] px-6 py-12 text-center text-white/50">
-              Hələ aktiv məhsul yoxdur.
+              {currentLocale === "az"
+                ? "Hələ aktiv məhsul yoxdur."
+                : currentLocale === "en"
+                  ? "No active products yet."
+                  : "Пока нет активных товаров."}
             </div>
           )}
         </Container>
