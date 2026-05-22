@@ -87,6 +87,25 @@
   "productThreeCategory": "Premium rahatlıq",
   "productFourName": "Monk Strap Atelier",
   "productFourCategory": "Premium klassik"
+},
+"Admin": {
+  "brand": "KHATT Admin",
+  "dashboard": "İdarə paneli",
+  "welcome": "Xoş gəldiniz",
+  "loginTitle": "Admin girişi",
+  "loginError": "Email və ya şifrə yanlışdır.",
+  "email": "Email",
+  "password": "Şifrə",
+  "loginButton": "Daxil ol",
+  "logout": "Çıxış",
+  "products": "Məhsullar",
+  "productsText": "Məhsul əlavə et və idarə et",
+  "orders": "Sifarişlər",
+  "ordersText": "Müştəri sifarişlərinə bax",
+  "repairRequests": "Təmir sorğuları",
+  "repairRequestsText": "Təmir müraciətlərini idarə et",
+  "customOrders": "Fərdi sifarişlər",
+  "customOrdersText": "Fərdi ayaqqabı sifarişlərini idarə et"
 }
   
 }

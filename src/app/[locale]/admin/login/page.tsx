@@ -17,6 +17,9 @@ export default async function AdminLoginPage({
     notFound();
   }
 
+  const messages = (await import(`../../../../messages/${locale}.json`)).default;
+  const t = messages.Admin;
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#0D0D0D] px-5 text-[#F5F3EF]">
       <form
@@ -26,20 +29,22 @@ export default async function AdminLoginPage({
         <input type="hidden" name="locale" value={locale} />
 
         <p className="text-xs uppercase tracking-[0.3em] text-[#D6C2A8]">
-          KHATT Admin
+          {t.brand}
         </p>
 
-        <h1 className="mt-4 text-3xl font-semibold">Admin login</h1>
+        <h1 className="mt-4 text-3xl font-semibold">{t.loginTitle}</h1>
 
         {error ? (
           <p className="mt-5 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-            Email və ya şifrə yanlışdır.
+            {t.loginError}
           </p>
         ) : null}
 
         <div className="mt-8 space-y-4">
           <label className="block">
-            <span className="mb-2 block text-sm text-white/60">Email</span>
+            <span className="mb-2 block text-sm text-white/60">
+              {t.email}
+            </span>
             <input
               name="email"
               type="email"
@@ -50,7 +55,9 @@ export default async function AdminLoginPage({
           </label>
 
           <label className="block">
-            <span className="mb-2 block text-sm text-white/60">Password</span>
+            <span className="mb-2 block text-sm text-white/60">
+              {t.password}
+            </span>
             <input
               name="password"
               type="password"
@@ -65,7 +72,7 @@ export default async function AdminLoginPage({
           type="submit"
           className="mt-6 w-full rounded-full bg-[#D6C2A8] px-6 py-4 text-sm font-medium text-black transition hover:bg-[#c4ad90]"
         >
-          Login
+          {t.loginButton}
         </button>
       </form>
     </main>

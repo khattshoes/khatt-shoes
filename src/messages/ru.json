@@ -87,5 +87,24 @@
   "productThreeCategory": "Премиальный комфорт",
   "productFourName": "Monk Strap Atelier",
   "productFourCategory": "Премиальная классика"
+},
+"Admin": {
+  "brand": "KHATT Admin",
+  "dashboard": "Панель управления",
+  "welcome": "Добро пожаловать",
+  "loginTitle": "Вход для администратора",
+  "loginError": "Email или пароль неверный.",
+  "email": "Email",
+  "password": "Пароль",
+  "loginButton": "Войти",
+  "logout": "Выйти",
+  "products": "Товары",
+  "productsText": "Добавление и управление товарами",
+  "orders": "Заказы",
+  "ordersText": "Просмотр заказов клиентов",
+  "repairRequests": "Заявки на ремонт",
+  "repairRequestsText": "Управление заявками на ремонт",
+  "customOrders": "Индивидуальные заказы",
+  "customOrdersText": "Управление индивидуальными заказами"
 }
 }
