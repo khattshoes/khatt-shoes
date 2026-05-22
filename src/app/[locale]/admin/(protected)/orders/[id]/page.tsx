@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { routing } from "@/i18n/routing";
+import { updateOrderStatusAction } from "./actions";
 
 type Locale = "az" | "en" | "ru";
 
@@ -55,6 +56,17 @@ const labels = {
     call: "Zəng et",
     noEmail: "Email yoxdur",
     unknownOrder: "Nömrəsiz sifariş",
+        changeStatus: "Statusu dəyiş",
+    saveStatus: "Yadda saxla",
+    statusUpdated: "Status yeniləndi.",
+    statusError: "Status yenilənərkən xəta baş verdi.",
+    statuses: {
+      new: "Yeni",
+      confirmed: "Təsdiqləndi",
+      processing: "Hazırlanır",
+      completed: "Tamamlandı",
+      cancelled: "Ləğv edildi",
+    },
   },
   en: {
     backToOrders: "Back to orders",
@@ -79,6 +91,17 @@ const labels = {
     call: "Call",
     noEmail: "No email",
     unknownOrder: "Order without number",
+        changeStatus: "Change status",
+    saveStatus: "Save status",
+    statusUpdated: "Status updated.",
+    statusError: "Could not update status.",
+    statuses: {
+      new: "New",
+      confirmed: "Confirmed",
+      processing: "Processing",
+      completed: "Completed",
+      cancelled: "Cancelled",
+    },
   },
   ru: {
     backToOrders: "Назад к заказам",
@@ -103,6 +126,17 @@ const labels = {
     call: "Позвонить",
     noEmail: "Email отсутствует",
     unknownOrder: "Заказ без номера",
+        changeStatus: "Изменить статус",
+    saveStatus: "Сохранить статус",
+    statusUpdated: "Статус обновлен.",
+    statusError: "Не удалось обновить статус.",
+    statuses: {
+      new: "Новый",
+      confirmed: "Подтвержден",
+      processing: "В обработке",
+      completed: "Завершен",
+      cancelled: "Отменен",
+    },
   },
 };
 
@@ -163,10 +197,13 @@ function getWhatsAppPhone(phone: string) {
 
 export default async function AdminOrderDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; id: string }>;
+  searchParams: Promise<{ updated?: string; error?: string }>;
 }) {
   const { locale, id } = await params;
+  const query = await searchParams;
 
   if (!hasLocale(routing.locales, locale)) {
     notFound();
@@ -240,13 +277,56 @@ export default async function AdminOrderDetailPage({
             </h1>
           </div>
 
-          <span
-            className={`w-fit rounded-full border px-4 py-2 text-sm ${getStatusClass(
-              order.status
-            )}`}
-          >
-            {order.status}
-          </span>
+                   <div className="w-full rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 md:w-[360px]">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="text-sm text-white/50">{t.changeStatus}</p>
+
+              <span
+                className={`rounded-full border px-3 py-1 text-xs ${getStatusClass(
+                  order.status
+                )}`}
+              >
+                {t.statuses[order.status as keyof typeof t.statuses] ||
+                  order.status}
+              </span>
+            </div>
+
+            {query.updated === "status" ? (
+              <p className="mb-3 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-xs text-emerald-200">
+                {t.statusUpdated}
+              </p>
+            ) : null}
+
+            {query.error === "status" ? (
+              <p className="mb-3 rounded-2xl border border-red-400/20 bg-red-400/10 px-3 py-2 text-xs text-red-200">
+                {t.statusError}
+              </p>
+            ) : null}
+
+            <form action={updateOrderStatusAction} className="flex gap-2">
+              <input type="hidden" name="locale" value={currentLocale} />
+              <input type="hidden" name="order_id" value={order.id} />
+
+              <select
+                name="status"
+                defaultValue={order.status}
+                className="min-w-0 flex-1 rounded-full border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-[#D6C2A8]"
+              >
+                <option value="new">{t.statuses.new}</option>
+                <option value="confirmed">{t.statuses.confirmed}</option>
+                <option value="processing">{t.statuses.processing}</option>
+                <option value="completed">{t.statuses.completed}</option>
+                <option value="cancelled">{t.statuses.cancelled}</option>
+              </select>
+
+              <button
+                type="submit"
+                className="rounded-full bg-[#D6C2A8] px-5 py-3 text-sm font-medium text-black transition hover:bg-[#c4ad90]"
+              >
+                {t.saveStatus}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
 
