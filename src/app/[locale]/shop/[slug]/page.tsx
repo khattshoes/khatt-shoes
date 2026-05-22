@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
@@ -144,28 +145,32 @@ const labels = {
   },
 };
 
-export default async function ProductDetailPage({
-  params,
-}: {
-  params: Promise<{ locale: string; slug: string }>;
-}) {
-  const { locale, slug } = await params;
+function getTranslation(product: ProductRow, locale: Locale) {
+  return (
+    product.product_translations.find((item) => item.locale === locale) ??
+    product.product_translations[0]
+  );
+}
 
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
+function getSortedImages(product: ProductRow) {
+  return [...product.product_images].sort((a, b) => {
+    if (a.is_primary) return -1;
+    if (b.is_primary) return 1;
+    return a.sort_order - b.sort_order;
+  });
+}
 
-  const currentLocale = locale as Locale;
+function getStockCount(product: ProductRow) {
+  const totalVariantStock = product.product_variants
+    .filter((variant) => variant.is_active)
+    .reduce((sum, variant) => sum + variant.stock_quantity, 0);
 
-  const allMessages = {
-    az: azMessages,
-    en: enMessages,
-    ru: ruMessages,
-  };
+  return product.product_variants.length > 0
+    ? totalVariantStock
+    : product.stock_quantity;
+}
 
-  const t = allMessages[currentLocale];
-  const l = labels[currentLocale];
-
+async function getProductBySlug(slug: string) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -210,40 +215,142 @@ export default async function ProductDetailPage({
 
   if (error) {
     console.error("Product detail error:", error.message);
-    notFound();
+    return null;
   }
 
-  if (!data) {
-    notFound();
+  return data as ProductRow | null;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+
+  if (!hasLocale(routing.locales, locale)) {
+    return {
+      title: "KHATT Shoes",
+    };
   }
 
-  const product = data as ProductRow;
+  const currentLocale = locale as Locale;
+  const product = await getProductBySlug(slug);
 
-  const translation =
-    product.product_translations.find((item) => item.locale === currentLocale) ??
-    product.product_translations[0];
+  if (!product) {
+    return {
+      title: "Product not found | KHATT Shoes",
+    };
+  }
 
+  const translation = getTranslation(product, currentLocale);
   const productName = translation?.name || product.slug;
+  const description =
+    translation?.short_description ||
+    translation?.description ||
+    "Premium handmade shoes by KHATT Shoes.";
 
-  const sortedImages = [...product.product_images].sort((a, b) => {
-    if (a.is_primary) return -1;
-    if (b.is_primary) return 1;
-    return a.sort_order - b.sort_order;
-  });
+  const imageUrl = getSortedImages(product)[0]?.image_url;
 
+  return {
+    title: `${productName} | KHATT Shoes`,
+    description,
+    openGraph: {
+      title: `${productName} | KHATT Shoes`,
+      description,
+      type: "website",
+      locale:
+        currentLocale === "az"
+          ? "az_AZ"
+          : currentLocale === "ru"
+            ? "ru_RU"
+            : "en_US",
+      images: imageUrl
+        ? [
+            {
+              url: imageUrl,
+              alt: productName,
+            },
+          ]
+        : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${productName} | KHATT Shoes`,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    },
+  };
+}
+
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+
+  const currentLocale = locale as Locale;
+
+  const allMessages = {
+    az: azMessages,
+    en: enMessages,
+    ru: ruMessages,
+  };
+
+  const t = allMessages[currentLocale];
+  const l = labels[currentLocale];
+
+  const product = await getProductBySlug(slug);
+
+  if (!product) {
+    notFound();
+  }
+
+  const translation = getTranslation(product, currentLocale);
+  const productName = translation?.name || product.slug;
+  const sortedImages = getSortedImages(product);
   const imageUrl = sortedImages[0]?.image_url ?? null;
+  const stockCount = getStockCount(product);
 
-  const totalVariantStock = product.product_variants
-    .filter((variant) => variant.is_active)
-    .reduce((sum, variant) => sum + variant.stock_quantity, 0);
-
-  const stockCount =
-    product.product_variants.length > 0
-      ? totalVariantStock
-      : product.stock_quantity;
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: productName,
+    image: sortedImages.map((image) => image.image_url).filter(Boolean),
+    description:
+      translation?.description ||
+      translation?.short_description ||
+      "Premium handmade shoes by KHATT Shoes.",
+    brand: {
+      "@type": "Brand",
+      name: "KHATT Shoes",
+    },
+    sku: product.slug,
+    offers: {
+      "@type": "Offer",
+      priceCurrency: product.currency,
+      price: product.price,
+      availability:
+        stockCount > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+    },
+  };
 
   return (
     <main className="bg-[#0D0D0D] py-16 text-[#F5F3EF]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+
       <Container>
         <Link
           href="/shop"
