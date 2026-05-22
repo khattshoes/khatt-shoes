@@ -12,11 +12,20 @@ type Locale = "az" | "en" | "ru";
 
 type SortValue = "newest" | "price-asc" | "price-desc";
 
+type CategoryRow = {
+  id: string;
+  slug: string;
+  name_az: string;
+  name_en: string;
+  name_ru: string;
+};
+
 type ProductRow = {
   id: string;
   slug: string;
   price: number;
   currency: string;
+  category_id: string | null;
   product_translations: {
     locale: Locale;
     name: string;
@@ -32,25 +41,31 @@ type ProductRow = {
 
 const shopLabels = {
   az: {
+    categoryLabel: "Kateqoriya",
     sortLabel: "Sıralama",
+    all: "Hamısı",
     newest: "Ən yenilər",
     priceAsc: "Ucuzdan bahaya",
     priceDesc: "Bahadan ucuza",
-    noProducts: "Hələ aktiv məhsul yoxdur.",
+    noProducts: "Bu seçimə uyğun aktiv məhsul yoxdur.",
   },
   en: {
+    categoryLabel: "Category",
     sortLabel: "Sort",
+    all: "All",
     newest: "Newest",
     priceAsc: "Price: low to high",
     priceDesc: "Price: high to low",
-    noProducts: "No active products yet.",
+    noProducts: "No active products match this selection.",
   },
   ru: {
+    categoryLabel: "Категория",
     sortLabel: "Сортировка",
+    all: "Все",
     newest: "Новые",
     priceAsc: "Цена: по возрастанию",
     priceDesc: "Цена: по убыванию",
-    noProducts: "Пока нет активных товаров.",
+    noProducts: "Нет активных товаров для выбранного фильтра.",
   },
 };
 
@@ -62,12 +77,46 @@ function getSafeSort(value?: string): SortValue {
   return "newest";
 }
 
+function getCategoryName(category: CategoryRow, locale: Locale) {
+  if (locale === "az") {
+    return category.name_az;
+  }
+
+  if (locale === "en") {
+    return category.name_en;
+  }
+
+  return category.name_ru;
+}
+
+function buildShopHref({
+  category,
+  sort,
+}: {
+  category?: string | null;
+  sort?: SortValue;
+}) {
+  const params = new URLSearchParams();
+
+  if (category) {
+    params.set("category", category);
+  }
+
+  if (sort && sort !== "newest") {
+    params.set("sort", sort);
+  }
+
+  const query = params.toString();
+
+  return query ? `/shop?${query}` : "/shop";
+}
+
 export default async function ShopPage({
   params,
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ sort?: string }>;
+  searchParams: Promise<{ sort?: string; category?: string }>;
 }) {
   const { locale } = await params;
   const query = await searchParams;
@@ -78,6 +127,7 @@ export default async function ShopPage({
 
   const currentLocale = locale as Locale;
   const currentSort = getSafeSort(query.sort);
+  const currentCategory = query.category || null;
 
   const messages = (await import(`../../../messages/${currentLocale}.json`))
     .default;
@@ -87,6 +137,21 @@ export default async function ShopPage({
 
   const supabase = await createClient();
 
+  const { data: categoriesData, error: categoriesError } = await supabase
+    .from("categories")
+    .select("id, slug, name_az, name_en, name_ru")
+    .order("sort_order", { ascending: true });
+
+  if (categoriesError) {
+    console.error("Shop categories error:", categoriesError.message);
+  }
+
+  const categories = categoriesError ? [] : ((categoriesData ?? []) as CategoryRow[]);
+
+  const activeCategory = categories.find(
+    (category) => category.slug === currentCategory
+  );
+
   let productsQuery = supabase
     .from("products")
     .select(
@@ -95,6 +160,7 @@ export default async function ShopPage({
       slug,
       price,
       currency,
+      category_id,
       product_translations (
         locale,
         name,
@@ -109,6 +175,10 @@ export default async function ShopPage({
     `
     )
     .eq("status", "active");
+
+  if (activeCategory) {
+    productsQuery = productsQuery.eq("category_id", activeCategory.id);
+  }
 
   if (currentSort === "price-asc") {
     productsQuery = productsQuery.order("price", { ascending: true });
@@ -136,57 +206,79 @@ export default async function ShopPage({
 
       <section className="py-20">
         <Container>
-          <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-[#D6C2A8]">
-                {shop.eyebrow}
-              </p>
-              <h2 className="mt-3 text-3xl font-semibold">
-                {shop.sectionTitle}
-              </h2>
-            </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="flex gap-2 text-xs text-white/50">
-                <span className="rounded-full border border-[#D6C2A8]/40 bg-[#D6C2A8]/10 px-4 py-2 text-[#D6C2A8]">
-                  {shop.all}
-                </span>
-                <span className="rounded-full border border-white/10 px-4 py-2">
-                  {shop.formal}
-                </span>
-                <span className="rounded-full border border-white/10 px-4 py-2">
-                  {shop.casual}
-                </span>
+          <div className="mb-10 flex flex-col gap-5">
+            <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-[#D6C2A8]">
+                  {shop.eyebrow}
+                </p>
+                <h2 className="mt-3 text-3xl font-semibold">
+                  {shop.sectionTitle}
+                </h2>
               </div>
 
-              <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] p-1 text-xs">
-                <span className="px-3 text-white/45">
-                  {localLabels.sortLabel}
-                </span>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="flex flex-wrap items-center gap-2 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-1 text-xs">
+                  <span className="px-3 text-white/45">
+                    {localLabels.sortLabel}
+                  </span>
 
-                <SortLink
-                  locale={currentLocale}
-                  value="newest"
-                  currentSort={currentSort}
-                >
-                  {localLabels.newest}
-                </SortLink>
+                  <SortLink
+                    locale={currentLocale}
+                    category={activeCategory?.slug ?? null}
+                    value="newest"
+                    currentSort={currentSort}
+                  >
+                    {localLabels.newest}
+                  </SortLink>
 
-                <SortLink
-                  locale={currentLocale}
-                  value="price-asc"
-                  currentSort={currentSort}
-                >
-                  {localLabels.priceAsc}
-                </SortLink>
+                  <SortLink
+                    locale={currentLocale}
+                    category={activeCategory?.slug ?? null}
+                    value="price-asc"
+                    currentSort={currentSort}
+                  >
+                    {localLabels.priceAsc}
+                  </SortLink>
 
-                <SortLink
+                  <SortLink
+                    locale={currentLocale}
+                    category={activeCategory?.slug ?? null}
+                    value="price-desc"
+                    currentSort={currentSort}
+                  >
+                    {localLabels.priceDesc}
+                  </SortLink>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-4">
+              <p className="mb-3 text-xs uppercase tracking-[0.24em] text-white/35">
+                {localLabels.categoryLabel}
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                <CategoryLink
                   locale={currentLocale}
-                  value="price-desc"
-                  currentSort={currentSort}
+                  category={null}
+                  currentCategory={activeCategory?.slug ?? null}
+                  sort={currentSort}
                 >
-                  {localLabels.priceDesc}
-                </SortLink>
+                  {localLabels.all}
+                </CategoryLink>
+
+                {categories.map((category) => (
+                  <CategoryLink
+                    key={category.id}
+                    locale={currentLocale}
+                    category={category.slug}
+                    currentCategory={activeCategory?.slug ?? null}
+                    sort={currentSort}
+                  >
+                    {getCategoryName(category, currentLocale)}
+                  </CategoryLink>
+                ))}
               </div>
             </div>
           </div>
@@ -258,11 +350,13 @@ export default async function ShopPage({
 
 function SortLink({
   locale,
+  category,
   value,
   currentSort,
   children,
 }: {
   locale: Locale;
+  category: string | null;
   value: SortValue;
   currentSort: SortValue;
   children: React.ReactNode;
@@ -271,12 +365,42 @@ function SortLink({
 
   return (
     <Link
-      href={`/shop?sort=${value}`}
+      href={buildShopHref({ category, sort: value })}
       locale={locale}
       className={
         isActive
           ? "rounded-full bg-[#D6C2A8] px-4 py-2 font-medium text-black"
           : "rounded-full px-4 py-2 text-white/55 transition hover:bg-white/10 hover:text-white"
+      }
+    >
+      {children}
+    </Link>
+  );
+}
+
+function CategoryLink({
+  locale,
+  category,
+  currentCategory,
+  sort,
+  children,
+}: {
+  locale: Locale;
+  category: string | null;
+  currentCategory: string | null;
+  sort: SortValue;
+  children: React.ReactNode;
+}) {
+  const isActive = category === currentCategory;
+
+  return (
+    <Link
+      href={buildShopHref({ category, sort })}
+      locale={locale}
+      className={
+        isActive
+          ? "rounded-full bg-[#D6C2A8] px-5 py-2.5 text-sm font-medium text-black"
+          : "rounded-full border border-white/10 px-5 py-2.5 text-sm text-white/60 transition hover:border-[#D6C2A8]/40 hover:text-white"
       }
     >
       {children}
