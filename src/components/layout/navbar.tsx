@@ -2,6 +2,7 @@ import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { Container } from "@/components/shared/container";
+import { CartNavLink } from "@/components/shop/cart-nav-link";
 import type { Locale } from "@/i18n/routing";
 
 type NavbarProps = {
@@ -20,6 +21,9 @@ export async function Navbar({ locale }: NavbarProps) {
     { href: "/about", label: t.about },
     { href: "/contact", label: t.contact },
   ] as const;
+
+  const cartLabel =
+    locale === "az" ? "Səbət" : locale === "en" ? "Cart" : "Корзина";
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0D0D0D]/80 backdrop-blur-2xl">
@@ -54,6 +58,8 @@ export async function Navbar({ locale }: NavbarProps) {
           <div className="hidden items-center gap-4 md:flex">
             <LanguageSwitcher />
 
+            <CartNavLink locale={locale} label={cartLabel} />
+
             <Link
               href="/custom-order"
               locale={locale}
@@ -63,7 +69,10 @@ export async function Navbar({ locale }: NavbarProps) {
             </Link>
           </div>
 
-          <MobileMenu locale={locale} navItems={navItems} />
+          <div className="flex items-center gap-3 md:hidden">
+            <CartNavLink locale={locale} label={cartLabel} />
+            <MobileMenu locale={locale} navItems={navItems} />
+          </div>
         </div>
       </Container>
     </header>
