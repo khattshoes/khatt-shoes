@@ -1,7 +1,7 @@
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
-export default async function HomePage() {
-  const t = await getTranslations("Home");
+export default function HomePage() {
+  const t = useTranslations("Home");
 
   return (
     <main className="min-h-screen bg-[#0D0D0D] px-6 py-32 text-[#F5F3EF]">
