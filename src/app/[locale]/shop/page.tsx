@@ -10,6 +10,8 @@ import { Link } from "@/i18n/navigation";
 
 type Locale = "az" | "en" | "ru";
 
+type SortValue = "newest" | "price-asc" | "price-desc";
+
 type ProductRow = {
   id: string;
   slug: string;
@@ -28,26 +30,64 @@ type ProductRow = {
   }[];
 };
 
+const shopLabels = {
+  az: {
+    sortLabel: "Sıralama",
+    newest: "Ən yenilər",
+    priceAsc: "Ucuzdan bahaya",
+    priceDesc: "Bahadan ucuza",
+    noProducts: "Hələ aktiv məhsul yoxdur.",
+  },
+  en: {
+    sortLabel: "Sort",
+    newest: "Newest",
+    priceAsc: "Price: low to high",
+    priceDesc: "Price: high to low",
+    noProducts: "No active products yet.",
+  },
+  ru: {
+    sortLabel: "Сортировка",
+    newest: "Новые",
+    priceAsc: "Цена: по возрастанию",
+    priceDesc: "Цена: по убыванию",
+    noProducts: "Пока нет активных товаров.",
+  },
+};
+
+function getSafeSort(value?: string): SortValue {
+  if (value === "price-asc" || value === "price-desc" || value === "newest") {
+    return value;
+  }
+
+  return "newest";
+}
+
 export default async function ShopPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ sort?: string }>;
 }) {
   const { locale } = await params;
+  const query = await searchParams;
 
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
 
   const currentLocale = locale as Locale;
+  const currentSort = getSafeSort(query.sort);
+
   const messages = (await import(`../../../messages/${currentLocale}.json`))
     .default;
   const pages = messages.Pages;
   const shop = messages.Shop;
+  const localLabels = shopLabels[currentLocale];
 
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  let productsQuery = supabase
     .from("products")
     .select(
       `
@@ -68,8 +108,17 @@ export default async function ShopPage({
       )
     `
     )
-    .eq("status", "active")
-    .order("created_at", { ascending: false });
+    .eq("status", "active");
+
+  if (currentSort === "price-asc") {
+    productsQuery = productsQuery.order("price", { ascending: true });
+  } else if (currentSort === "price-desc") {
+    productsQuery = productsQuery.order("price", { ascending: false });
+  } else {
+    productsQuery = productsQuery.order("created_at", { ascending: false });
+  }
+
+  const { data, error } = await productsQuery;
 
   if (error) {
     console.error("Shop products error:", error.message);
@@ -87,7 +136,7 @@ export default async function ShopPage({
 
       <section className="py-20">
         <Container>
-          <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-[#D6C2A8]">
                 {shop.eyebrow}
@@ -97,16 +146,48 @@ export default async function ShopPage({
               </h2>
             </div>
 
-            <div className="flex gap-2 text-xs text-white/50">
-              <span className="rounded-full border border-white/10 px-4 py-2">
-                {shop.all}
-              </span>
-              <span className="rounded-full border border-white/10 px-4 py-2">
-                {shop.formal}
-              </span>
-              <span className="rounded-full border border-white/10 px-4 py-2">
-                {shop.casual}
-              </span>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="flex gap-2 text-xs text-white/50">
+                <span className="rounded-full border border-[#D6C2A8]/40 bg-[#D6C2A8]/10 px-4 py-2 text-[#D6C2A8]">
+                  {shop.all}
+                </span>
+                <span className="rounded-full border border-white/10 px-4 py-2">
+                  {shop.formal}
+                </span>
+                <span className="rounded-full border border-white/10 px-4 py-2">
+                  {shop.casual}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] p-1 text-xs">
+                <span className="px-3 text-white/45">
+                  {localLabels.sortLabel}
+                </span>
+
+                <SortLink
+                  locale={currentLocale}
+                  value="newest"
+                  currentSort={currentSort}
+                >
+                  {localLabels.newest}
+                </SortLink>
+
+                <SortLink
+                  locale={currentLocale}
+                  value="price-asc"
+                  currentSort={currentSort}
+                >
+                  {localLabels.priceAsc}
+                </SortLink>
+
+                <SortLink
+                  locale={currentLocale}
+                  value="price-desc"
+                  currentSort={currentSort}
+                >
+                  {localLabels.priceDesc}
+                </SortLink>
+              </div>
             </div>
           </div>
 
@@ -129,7 +210,7 @@ export default async function ShopPage({
                     key={product.id}
                     href={`/shop/${product.slug}`}
                     locale={currentLocale}
-                    className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#111]"
+                    className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#111] transition hover:border-[#D6C2A8]/40"
                   >
                     <div className="relative aspect-[4/3] overflow-hidden bg-[#151515]">
                       {image?.image_url ? (
@@ -166,15 +247,39 @@ export default async function ShopPage({
             </div>
           ) : (
             <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] px-6 py-12 text-center text-white/50">
-              {currentLocale === "az"
-                ? "Hələ aktiv məhsul yoxdur."
-                : currentLocale === "en"
-                  ? "No active products yet."
-                  : "Пока нет активных товаров."}
+              {localLabels.noProducts}
             </div>
           )}
         </Container>
       </section>
     </main>
+  );
+}
+
+function SortLink({
+  locale,
+  value,
+  currentSort,
+  children,
+}: {
+  locale: Locale;
+  value: SortValue;
+  currentSort: SortValue;
+  children: React.ReactNode;
+}) {
+  const isActive = currentSort === value;
+
+  return (
+    <Link
+      href={`/shop?sort=${value}`}
+      locale={locale}
+      className={
+        isActive
+          ? "rounded-full bg-[#D6C2A8] px-4 py-2 font-medium text-black"
+          : "rounded-full px-4 py-2 text-white/55 transition hover:bg-white/10 hover:text-white"
+      }
+    >
+      {children}
+    </Link>
   );
 }
