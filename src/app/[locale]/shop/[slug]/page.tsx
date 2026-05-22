@@ -67,6 +67,18 @@ const labels = {
     craftsmanship: "Əl işi keyfiyyəti",
     craftsmanshipText:
       "KHATT məhsulları premium materiallar və diqqətli əl işi yanaşması ilə hazırlanır.",
+    sizeAdvice: "Ölçü məsləhəti",
+    sizeAdviceText:
+      "Əgər ölçü ilə bağlı tərəddüdünüz varsa, sifarişdən sonra komandamız sizinlə əlaqə saxlayıb ən uyğun ölçünü dəqiqləşdirəcək.",
+    payment: "Ödəniş",
+    paymentText:
+      "Hazırda sifarişlər təsdiq zəngi/mesajı ilə qəbul olunur. Ödəniş detalları müştəri ilə fərdi şəkildə razılaşdırılır.",
+    care: "Qulluq",
+    careText:
+      "Dəri ayaqqabıları birbaşa günəş və nəmdən qoruyun, yumşaq parça və uyğun qulluq vasitələri ilə təmizləyin.",
+    madeToOrder: "Premium əl işi yanaşması",
+    madeToOrderText:
+      "KHATT ayaqqabıları keyfiyyət, ölçü və rahatlıq detalları nəzərə alınaraq hazırlanır. Sifarişdən sonra detalları təsdiqləmək üçün sizinlə əlaqə saxlanılacaq.",
   },
   en: {
     material: "Material",
@@ -86,6 +98,18 @@ const labels = {
     craftsmanship: "Handcrafted quality",
     craftsmanshipText:
       "KHATT products are made with premium materials and a careful handmade approach.",
+    sizeAdvice: "Size advice",
+    sizeAdviceText:
+      "If you are unsure about sizing, our team will contact you after the order to confirm the most suitable size.",
+    payment: "Payment",
+    paymentText:
+      "Orders are currently confirmed by call or message. Payment details are agreed individually with the customer.",
+    care: "Care",
+    careText:
+      "Protect leather shoes from direct sunlight and moisture. Clean them with a soft cloth and suitable care products.",
+    madeToOrder: "Premium handmade approach",
+    madeToOrderText:
+      "KHATT shoes are crafted with attention to quality, sizing and comfort details. Our team will contact you after ordering to confirm the details.",
   },
   ru: {
     material: "Материал",
@@ -105,6 +129,18 @@ const labels = {
     craftsmanship: "Ручное качество",
     craftsmanshipText:
       "Изделия KHATT создаются из премиальных материалов с внимательным ручным подходом.",
+    sizeAdvice: "Совет по размеру",
+    sizeAdviceText:
+      "Если вы не уверены в размере, наша команда свяжется с вами после заказа и поможет подобрать подходящий размер.",
+    payment: "Оплата",
+    paymentText:
+      "Заказы сейчас подтверждаются через звонок или сообщение. Детали оплаты согласовываются индивидуально с клиентом.",
+    care: "Уход",
+    careText:
+      "Берегите кожаную обувь от прямого солнца и влаги. Очищайте мягкой тканью и подходящими средствами ухода.",
+    madeToOrder: "Премиальный ручной подход",
+    madeToOrderText:
+      "Обувь KHATT создается с вниманием к качеству, размеру и комфорту. После заказа наша команда свяжется с вами для подтверждения деталей.",
   },
 };
 
@@ -168,7 +204,7 @@ export default async function ProductDetailPage({
       )
     `
     )
-        .eq("slug", slug)
+    .eq("slug", slug)
     .eq("status", "active")
     .maybeSingle();
 
@@ -218,10 +254,29 @@ export default async function ProductDetailPage({
         </Link>
 
         <section className="mt-10 grid gap-10 lg:grid-cols-[1.08fr_0.92fr]">
-          <ProductGallery
-            images={product.product_images}
-            fallbackAlt={productName}
-          />
+          <div>
+            <ProductGallery
+              images={product.product_images}
+              fallbackAlt={productName}
+            />
+
+            <div className="mt-4 rounded-[1.5rem] border border-[#D6C2A8]/20 bg-[#D6C2A8]/10 p-5">
+              <h3 className="text-sm font-semibold text-[#D6C2A8]">
+                {l.madeToOrder}
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-white/60">
+                {l.madeToOrderText}
+              </p>
+            </div>
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <InfoCard title={l.delivery} text={l.deliveryText} />
+              <InfoCard title={l.payment} text={l.paymentText} />
+              <InfoCard title={l.sizeAdvice} text={l.sizeAdviceText} />
+              <InfoCard title={l.care} text={l.careText} />
+              <InfoCard title={l.craftsmanship} text={l.craftsmanshipText} />
+            </div>
+          </div>
 
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-7 md:p-8">
@@ -311,11 +366,6 @@ export default async function ProductDetailPage({
                   </Link>
                 </div>
               ) : null}
-            </div>
-
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <InfoCard title={l.delivery} text={l.deliveryText} />
-              <InfoCard title={l.craftsmanship} text={l.craftsmanshipText} />
             </div>
           </div>
         </section>
