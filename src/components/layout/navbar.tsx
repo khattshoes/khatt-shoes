@@ -53,6 +53,7 @@ export async function Navbar({ locale }: NavbarProps) {
 
           <div className="hidden items-center gap-4 md:flex">
             <LanguageSwitcher />
+
             <Link
               href="/custom-order"
               locale={locale}

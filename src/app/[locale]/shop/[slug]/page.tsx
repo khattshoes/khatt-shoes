@@ -210,6 +210,7 @@ export default async function ProductDetailPage({
       <Container>
         <Link
           href="/shop"
+          locale={currentLocale}
           className="text-sm text-[#D6C2A8] transition hover:text-white"
         >
           ← {t.Pages.shopTitle}
@@ -291,6 +292,7 @@ export default async function ProductDetailPage({
               <div className="mt-4">
                 <Link
                   href="/checkout"
+                  locale={currentLocale}
                   className="block rounded-full border border-white/10 px-8 py-4 text-center text-sm font-medium text-white/70 transition hover:border-[#D6C2A8]/50 hover:text-[#D6C2A8]"
                 >
                   {l.order}
@@ -301,6 +303,7 @@ export default async function ProductDetailPage({
                 <div className="mt-3">
                   <Link
                     href="/custom-order"
+                    locale={currentLocale}
                     className="block rounded-full border border-white/10 px-8 py-4 text-center text-sm font-medium text-white/70 transition hover:border-[#D6C2A8]/50 hover:text-[#D6C2A8]"
                   >
                     {t.Nav.custom}

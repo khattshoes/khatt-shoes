@@ -40,7 +40,8 @@ export default async function ShopPage({
   }
 
   const currentLocale = locale as Locale;
-  const messages = (await import(`../../../messages/${locale}.json`)).default;
+  const messages = (await import(`../../../messages/${currentLocale}.json`))
+    .default;
   const pages = messages.Pages;
   const shop = messages.Shop;
 
@@ -127,6 +128,7 @@ export default async function ShopPage({
                   <Link
                     key={product.id}
                     href={`/shop/${product.slug}`}
+                    locale={currentLocale}
                     className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#111]"
                   >
                     <div className="relative aspect-[4/3] overflow-hidden bg-[#151515]">
