@@ -156,7 +156,17 @@
 "productUpdated": "Məhsul yeniləndi",
 "productDeleted": "Məhsul silindi",
 "notFound": "Tapılmadı",
-"edit": "Redaktə"
+"edit": "Redaktə",
+"images": "Şəkillər",
+"imageUrl": "Şəkil URL",
+"altText": "Alt mətn",
+"sortOrder": "Sıralama",
+"isPrimary": "Əsas şəkil",
+"addImage": "Şəkil əlavə et",
+"deleteImage": "Şəkli sil",
+"noImages": "Hələ şəkil yoxdur",
+"imageFile": "Şəkil faylı",
+"uploadImage": "Şəkil yüklə"
   
 }
   

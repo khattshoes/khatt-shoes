@@ -132,6 +132,11 @@ export async function deleteProductAction(formData: FormData) {
     throw new Error("Missing product ID");
   }
 
+  const { data: images } = await supabase
+    .from("product_images")
+    .select("image_url")
+    .eq("product_id", productId);
+
   const { error } = await supabase
     .from("products")
     .delete()
@@ -141,10 +146,147 @@ export async function deleteProductAction(formData: FormData) {
     throw new Error(error.message);
   }
 
+  const storagePaths =
+    images
+      ?.map((image) => getStoragePathFromPublicUrl(image.image_url))
+      .filter((path): path is string => Boolean(path)) ?? [];
+
+  if (storagePaths.length) {
+    await supabase.storage.from("product-images").remove(storagePaths);
+  }
+
   revalidatePath(`/${locale}/admin/products`);
 
   redirect({
     href: "/admin/products",
     locale,
   });
+}
+
+export async function uploadProductImageAction(formData: FormData) {
+  const admin = await getAdminUser();
+
+  if (!admin) {
+    throw new Error("Unauthorized");
+  }
+
+  const locale = getSafeLocale(formData.get("locale"));
+  const productId = requiredString(formData.get("product_id"));
+  const file = formData.get("image_file");
+  const altText = optionalString(formData.get("alt_text"));
+  const sortOrder = numberValue(formData.get("sort_order"));
+  const isPrimary = formData.get("is_primary") === "on";
+
+  if (!productId || !(file instanceof File) || file.size === 0) {
+    throw new Error("Missing image file");
+  }
+
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error("Only JPEG, PNG, WEBP or AVIF images are allowed");
+  }
+
+  const maxSize = 5 * 1024 * 1024;
+
+  if (file.size > maxSize) {
+    throw new Error("Image must be smaller than 5MB");
+  }
+
+  const supabase = await createClient();
+
+  const fileExt = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const fileName = `${crypto.randomUUID()}.${fileExt}`;
+  const filePath = `${productId}/${fileName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("product-images")
+    .upload(filePath, file, {
+      cacheControl: "31536000",
+      upsert: false,
+      contentType: file.type,
+    });
+
+  if (uploadError) {
+    throw new Error(uploadError.message);
+  }
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("product-images").getPublicUrl(filePath);
+
+  if (isPrimary) {
+    await supabase
+      .from("product_images")
+      .update({ is_primary: false })
+      .eq("product_id", productId);
+  }
+
+  const { error: dbError } = await supabase.from("product_images").insert({
+    product_id: productId,
+    image_url: publicUrl,
+    alt_text: altText,
+    sort_order: sortOrder,
+    is_primary: isPrimary,
+  });
+
+  if (dbError) {
+    await supabase.storage.from("product-images").remove([filePath]);
+    throw new Error(dbError.message);
+  }
+
+  revalidatePath(`/${locale}/admin/products/${productId}`);
+
+  redirect({
+    href: `/admin/products/${productId}`,
+    locale,
+  });
+}
+
+export async function deleteProductImageAction(formData: FormData) {
+  const admin = await getAdminUser();
+
+  if (!admin) {
+    throw new Error("Unauthorized");
+  }
+
+  const locale = getSafeLocale(formData.get("locale"));
+  const productId = requiredString(formData.get("product_id"));
+  const imageId = requiredString(formData.get("image_id"));
+  const imageUrl = requiredString(formData.get("image_url"));
+  const supabase = await createClient();
+
+  if (!productId || !imageId) {
+    throw new Error("Missing image ID");
+  }
+
+  const { error } = await supabase
+    .from("product_images")
+    .delete()
+    .eq("id", imageId)
+    .eq("product_id", productId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const storagePath = getStoragePathFromPublicUrl(imageUrl);
+
+  if (storagePath) {
+    await supabase.storage.from("product-images").remove([storagePath]);
+  }
+
+  revalidatePath(`/${locale}/admin/products/${productId}`);
+
+  redirect({
+    href: `/admin/products/${productId}`,
+    locale,
+  });
+}
+
+function getStoragePathFromPublicUrl(url: string) {
+  const marker = "/product-images/";
+  const [, path] = url.split(marker);
+
+  return path || null;
 }

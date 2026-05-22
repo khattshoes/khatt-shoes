@@ -1,9 +1,16 @@
+/* eslint-disable @next/next/no-img-element */
+
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { routing } from "@/i18n/routing";
-import { updateProductAction, deleteProductAction } from "./actions";
+import {
+  updateProductAction,
+  deleteProductAction,
+  uploadProductImageAction,
+  deleteProductImageAction,
+} from "./actions";
 import azMessages from "@/messages/az.json";
 import enMessages from "@/messages/en.json";
 import ruMessages from "@/messages/ru.json";
@@ -24,6 +31,14 @@ type TranslationRow = {
   description: string | null;
 };
 
+type ProductImageRow = {
+  id: string;
+  image_url: string;
+  alt_text: string | null;
+  sort_order: number;
+  is_primary: boolean;
+};
+
 type ProductRow = {
   id: string;
   category_id: string | null;
@@ -40,6 +55,7 @@ type ProductRow = {
   color: string | null;
   size_range: string | null;
   product_translations: TranslationRow[];
+  product_images: ProductImageRow[];
 };
 
 function getTranslation(product: ProductRow, locale: Locale) {
@@ -75,42 +91,51 @@ export default async function EditProductPage({
   const t = allMessages[currentLocale].Admin;
   const supabase = await createClient();
 
-  const [{ data: product, error: productError }, { data: categories, error: categoryError }] =
-    await Promise.all([
-      supabase
-        .from("products")
-        .select(
-          `
-          id,
-          category_id,
-          slug,
-          sku,
-          price,
-          old_price,
-          currency,
-          status,
-          stock_quantity,
-          is_featured,
-          is_custom_available,
-          material,
-          color,
-          size_range,
-          product_translations (
-            locale,
-            name,
-            short_description,
-            description
-          )
+  const [
+    { data: product, error: productError },
+    { data: categories, error: categoryError },
+  ] = await Promise.all([
+    supabase
+      .from("products")
+      .select(
         `
+        id,
+        category_id,
+        slug,
+        sku,
+        price,
+        old_price,
+        currency,
+        status,
+        stock_quantity,
+        is_featured,
+        is_custom_available,
+        material,
+        color,
+        size_range,
+        product_translations (
+          locale,
+          name,
+          short_description,
+          description
+        ),
+        product_images (
+          id,
+          image_url,
+          alt_text,
+          sort_order,
+          is_primary
         )
-        .eq("id", id)
-        .single(),
-      supabase
-        .from("categories")
-        .select("id, name_az, name_en, name_ru")
-        .eq("is_active", true)
-        .order("sort_order", { ascending: true }),
-    ]);
+      `
+      )
+      .eq("id", id)
+      .single(),
+    supabase
+      .from("categories")
+      .select("id, name_az, name_en, name_ru")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true }),
+  ]);
 
   if (productError || !product) {
     notFound();
@@ -144,7 +169,9 @@ export default async function EditProductPage({
         <input type="hidden" name="product_id" value={productRow.id} />
 
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
-          <h2 className="mb-6 text-xl font-semibold">Product info</h2>
+          <h2 className="mb-6 text-xl font-semibold">
+            {t.newProductDescription}
+          </h2>
 
           <div className="grid gap-5 md:grid-cols-2">
             <Input label={t.slug} name="slug" required defaultValue={productRow.slug} />
@@ -154,7 +181,9 @@ export default async function EditProductPage({
             <Input label={t.currency} name="currency" required defaultValue={productRow.currency} />
 
             <label className="block">
-              <span className="mb-2 block text-sm text-white/60">{t.category}</span>
+              <span className="mb-2 block text-sm text-white/60">
+                {t.category}
+              </span>
               <select
                 name="category_id"
                 defaultValue={productRow.category_id ?? ""}
@@ -179,7 +208,9 @@ export default async function EditProductPage({
             </label>
 
             <label className="block">
-              <span className="mb-2 block text-sm text-white/60">{t.status}</span>
+              <span className="mb-2 block text-sm text-white/60">
+                {t.status}
+              </span>
               <select
                 name="status"
                 defaultValue={productRow.status}
@@ -205,7 +236,9 @@ export default async function EditProductPage({
         </section>
 
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
-          <h2 className="mb-6 text-xl font-semibold">Translations</h2>
+          <h2 className="mb-6 text-xl font-semibold">
+            {t.nameAz} / {t.nameEn} / {t.nameRu}
+          </h2>
 
           <div className="space-y-6">
             <TranslationBlock
@@ -215,7 +248,6 @@ export default async function EditProductPage({
               suffix="az"
               translation={az}
             />
-
             <TranslationBlock
               nameLabel={t.nameEn}
               shortLabel={t.shortDescriptionEn}
@@ -223,7 +255,6 @@ export default async function EditProductPage({
               suffix="en"
               translation={en}
             />
-
             <TranslationBlock
               nameLabel={t.nameRu}
               shortLabel={t.shortDescriptionRu}
@@ -234,15 +265,103 @@ export default async function EditProductPage({
           </div>
         </section>
 
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <button
-            type="submit"
-            className="rounded-full bg-[#D6C2A8] px-8 py-4 text-sm font-medium text-black transition hover:bg-[#c4ad90]"
-          >
-            {t.updateProduct}
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="rounded-full bg-[#D6C2A8] px-8 py-4 text-sm font-medium text-black transition hover:bg-[#c4ad90]"
+        >
+          {t.updateProduct}
+        </button>
       </form>
+
+      <section className="mt-8 rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
+        <h2 className="mb-6 text-xl font-semibold">{t.images}</h2>
+
+        {productRow.product_images.length ? (
+          <div className="mb-8 grid gap-4 md:grid-cols-2">
+            {[...productRow.product_images]
+              .sort((a, b) => a.sort_order - b.sort_order)
+              .map((image) => (
+                <div
+                  key={image.id}
+                  className="overflow-hidden rounded-2xl border border-white/10 bg-black/20"
+                >
+                  <div className="aspect-[4/3] bg-black">
+                    <img
+                      src={image.image_url}
+                      alt={image.alt_text || productRow.slug}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+
+                  <div className="space-y-3 p-4">
+                    <p className="break-all text-xs text-white/45">
+                      {image.image_url}
+                    </p>
+
+                    <div className="flex items-center justify-between text-xs text-white/45">
+                      <span>
+                        {t.sortOrder}: {image.sort_order}
+                      </span>
+                      <span>{image.is_primary ? t.isPrimary : ""}</span>
+                    </div>
+
+                    <form action={deleteProductImageAction}>
+                      <input type="hidden" name="locale" value={currentLocale} />
+                      <input type="hidden" name="product_id" value={productRow.id} />
+                      <input type="hidden" name="image_id" value={image.id} />
+                      <input type="hidden" name="image_url" value={image.image_url} />
+
+                      <button
+                        type="submit"
+                        className="rounded-full border border-red-500/30 px-5 py-2 text-xs text-red-300 transition hover:bg-red-500/10"
+                      >
+                        {t.deleteImage}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              ))}
+          </div>
+        ) : (
+          <p className="mb-8 rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-sm text-white/45">
+            {t.noImages}
+          </p>
+        )}
+
+        <form
+          action={uploadProductImageAction}
+          className="grid gap-5 md:grid-cols-2"
+        >
+          <input type="hidden" name="locale" value={currentLocale} />
+          <input type="hidden" name="product_id" value={productRow.id} />
+
+          <label className="block">
+            <span className="mb-2 block text-sm text-white/60">
+              {t.imageFile || "Image file"}
+            </span>
+            <input
+              name="image_file"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/avif"
+              required
+              className="w-full rounded-2xl border border-white/10 bg-black/30 px-5 py-4 text-white file:mr-4 file:rounded-full file:border-0 file:bg-[#D6C2A8] file:px-4 file:py-2 file:text-sm file:font-medium file:text-black"
+            />
+          </label>
+
+          <Input label={t.altText} name="alt_text" placeholder={productRow.slug} />
+          <Input label={t.sortOrder} name="sort_order" type="number" defaultValue="0" />
+          <Checkbox label={t.isPrimary} name="is_primary" />
+
+          <div className="md:col-span-2">
+            <button
+              type="submit"
+              className="rounded-full bg-[#D6C2A8] px-8 py-4 text-sm font-medium text-black transition hover:bg-[#c4ad90]"
+            >
+              {t.uploadImage || "Upload image"}
+            </button>
+          </div>
+        </form>
+      </section>
 
       <form action={deleteProductAction} className="mt-5">
         <input type="hidden" name="locale" value={currentLocale} />
