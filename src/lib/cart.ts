@@ -60,3 +60,20 @@ export function removeCartItem(productId: string, variantId: string) {
 export function clearCart() {
   saveCartItems([]);
 }
+export function updateCartItemQuantity(
+  productId: string,
+  variantId: string,
+  quantity: number
+) {
+  const items = getCartItems();
+
+  const nextItems = items
+    .map((item) =>
+      item.productId === productId && item.variantId === variantId
+        ? { ...item, quantity }
+        : item
+    )
+    .filter((item) => item.quantity > 0);
+
+  saveCartItems(nextItems);
+}
