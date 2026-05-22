@@ -190,7 +190,7 @@ export default async function AdminProductsPage({
                           href={`/admin/products/${product.id}`}
                           className="text-[#D6C2A8] transition hover:text-white"
                         >
-                          Edit
+                          {t.edit}
                         </Link>
                       </td>
                     </tr>

@@ -147,7 +147,16 @@
 "descriptionRu": "Ətraflı təsvir RU",
 "saveProduct": "Məhsulu yadda saxla",
 "productCreated": "Məhsul əlavə edildi",
-"requiredFields": "Məcburi xanaları doldurun"
+"requiredFields": "Məcburi xanaları doldurun",
+"editProduct": "Məhsulu redaktə et",
+"editProductDescription": "Məhsul məlumatlarını və tərcümələrini yenilə.",
+"updateProduct": "Məhsulu yenilə",
+"deleteProduct": "Məhsulu sil",
+"deleteConfirm": "Bu məhsulu silmək istədiyinizə əminsiniz?",
+"productUpdated": "Məhsul yeniləndi",
+"productDeleted": "Məhsul silindi",
+"notFound": "Tapılmadı",
+"edit": "Redaktə"
   
 }
   

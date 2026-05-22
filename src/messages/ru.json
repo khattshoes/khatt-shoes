@@ -147,6 +147,15 @@
 "descriptionRu": "Описание RU",
 "saveProduct": "Сохранить товар",
 "productCreated": "Товар добавлен",
-"requiredFields": "Заполните обязательные поля"
+"requiredFields": "Заполните обязательные поля",
+"editProduct": "Редактировать товар",
+"editProductDescription": "Обновить информацию о товаре и переводы.",
+"updateProduct": "Обновить товар",
+"deleteProduct": "Удалить товар",
+"deleteConfirm": "Вы уверены, что хотите удалить этот товар?",
+"productUpdated": "Товар обновлен",
+"productDeleted": "Товар удален",
+"notFound": "Не найдено",
+"edit": "Редактировать"
 }
 }

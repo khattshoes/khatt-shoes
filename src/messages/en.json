@@ -147,6 +147,15 @@
 "descriptionRu": "Description RU",
 "saveProduct": "Save product",
 "productCreated": "Product created",
-"requiredFields": "Please fill required fields"
+"requiredFields": "Please fill required fields",
+"editProduct": "Məhsulu redaktə et",
+"editProductDescription": "Məhsul məlumatlarını və tərcümələrini yenilə.",
+"updateProduct": "Məhsulu yenilə",
+"deleteProduct": "Məhsulu sil",
+"deleteConfirm": "Bu məhsulu silmək istədiyinizə əminsiniz?",
+"productUpdated": "Məhsul yeniləndi",
+"productDeleted": "Məhsul silindi",
+"notFound": "Tapılmadı",
+"edit": "Redaktə"
 }
 }
