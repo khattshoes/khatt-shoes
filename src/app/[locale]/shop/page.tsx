@@ -4,6 +4,7 @@ import { PageHero } from "@/components/shared/page-hero";
 import { Container } from "@/components/shared/container";
 import { createClient } from "@/lib/supabase/server";
 import { routing } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 
 type Locale = "az" | "en" | "ru";
 
@@ -123,10 +124,11 @@ export default async function ShopPage({
                   )[0];
 
                 return (
-                  <article
-                    key={product.id}
-                    className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#111]"
-                  >
+                  <Link
+  key={product.id}
+  href={`/shop/${product.slug}`}
+  className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#111]"
+>
                     <div className="relative aspect-[4/3] overflow-hidden bg-[#151515]">
                       {image?.image_url ? (
                         <img
@@ -154,7 +156,7 @@ export default async function ShopPage({
                         {product.price} {product.currency}
                       </p>
                     </div>
-                  </article>
+                  </Link>
                 );
               })}
             </div>
