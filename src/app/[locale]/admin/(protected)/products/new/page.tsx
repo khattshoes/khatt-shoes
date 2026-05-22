@@ -8,11 +8,46 @@ import azMessages from "@/messages/az.json";
 import enMessages from "@/messages/en.json";
 import ruMessages from "@/messages/ru.json";
 
+type Locale = "az" | "en" | "ru";
+
 type CategoryRow = {
   id: string;
   name_az: string;
   name_en: string;
   name_ru: string;
+};
+
+const adminCopy = {
+  az: {
+    productInfo: "Məhsul məlumatları",
+    visibility: "Görünürlük və seçimlər",
+    translations: "Tərcümələr",
+    homeFeatured: "Ana səhifədə göstər",
+    homeSortOrder: "Ana səhifə sırası",
+    homeSortHint: "Kiçik rəqəm əvvəl göstərilir. Məsələn: 1, 2, 3.",
+    productHint:
+      "Məhsul ana səhifədə görünməsi üçün status Active olmalı və “Ana səhifədə göstər” seçilməlidir.",
+  },
+  en: {
+    productInfo: "Product information",
+    visibility: "Visibility and options",
+    translations: "Translations",
+    homeFeatured: "Show on homepage",
+    homeSortOrder: "Homepage order",
+    homeSortHint: "Lower number appears first. Example: 1, 2, 3.",
+    productHint:
+      "To show this product on the homepage, status must be Active and “Show on homepage” must be selected.",
+  },
+  ru: {
+    productInfo: "Информация о товаре",
+    visibility: "Видимость и настройки",
+    translations: "Переводы",
+    homeFeatured: "Показать на главной",
+    homeSortOrder: "Порядок на главной",
+    homeSortHint: "Меньшее число отображается раньше. Например: 1, 2, 3.",
+    productHint:
+      "Чтобы товар отображался на главной, статус должен быть Active и опция показа на главной должна быть включена.",
+  },
 };
 
 export default async function NewProductPage({
@@ -26,13 +61,17 @@ export default async function NewProductPage({
     notFound();
   }
 
+  const currentLocale = locale as Locale;
+
   const allMessages = {
     az: azMessages,
     en: enMessages,
     ru: ruMessages,
   };
 
-  const t = allMessages[locale as keyof typeof allMessages].Admin;
+  const t = allMessages[currentLocale].Admin;
+  const c = adminCopy[currentLocale];
+
   const supabase = await createClient();
 
   const { data: categories, error } = await supabase
@@ -60,10 +99,13 @@ export default async function NewProductPage({
       </div>
 
       <form action={createProductAction} className="space-y-8">
-        <input type="hidden" name="locale" value={locale} />
+        <input type="hidden" name="locale" value={currentLocale} />
 
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
-          <h2 className="mb-6 text-xl font-semibold">Product info</h2>
+          <div className="mb-6 flex flex-col gap-2">
+            <h2 className="text-xl font-semibold">{c.productInfo}</h2>
+            <p className="text-sm leading-6 text-white/45">{c.productHint}</p>
+          </div>
 
           <div className="grid gap-5 md:grid-cols-2">
             <Input label={t.slug} name="slug" required placeholder="oxford-classic" />
@@ -83,9 +125,9 @@ export default async function NewProductPage({
                 <option value="">{t.selectCategory}</option>
                 {(categories as CategoryRow[] | null)?.map((category) => {
                   const categoryName =
-                    locale === "az"
+                    currentLocale === "az"
                       ? category.name_az
-                      : locale === "en"
+                      : currentLocale === "en"
                         ? category.name_en
                         : category.name_ru;
 
@@ -115,34 +157,39 @@ export default async function NewProductPage({
             </label>
 
             <Input label={t.stock} name="stock_quantity" type="number" defaultValue="0" />
-            <Input label={t.material} name="material" placeholder="Leather" />
-            <Input label={t.color} name="color" placeholder="Black" />
-            <Input label={t.sizeRange} name="size_range" placeholder="40-44" />
           </div>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-  <Checkbox label={t.isFeatured} name="is_featured" />
-  <Checkbox label="Ana səhifədə göstər" name="featured_on_home" />
-  <Checkbox label={t.isCustomAvailable} name="is_custom_available" />
-
-  <Input
-    label="Ana səhifə sırası"
-    name="home_sort_order"
-    type="number"
-    defaultValue="0"
-    placeholder="1"
-  />
-</div>
         </section>
 
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
-          <h2 className="mb-6 text-xl font-semibold">Translations</h2>
+          <h2 className="mb-6 text-xl font-semibold">{c.visibility}</h2>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <Checkbox label={t.isFeatured} name="is_featured" />
+            <Checkbox label={c.homeFeatured} name="featured_on_home" />
+            <Checkbox label={t.isCustomAvailable} name="is_custom_available" />
+
+            <Input
+              label={c.homeSortOrder}
+              name="home_sort_order"
+              type="number"
+              defaultValue="0"
+              placeholder="1"
+              hint={c.homeSortHint}
+            />
+          </div>
+        </section>
+
+        <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
+          <h2 className="mb-6 text-xl font-semibold">{c.translations}</h2>
 
           <div className="space-y-6">
             <TranslationBlock
               nameLabel={t.nameAz}
               shortLabel={t.shortDescriptionAz}
               descriptionLabel={t.descriptionAz}
+              materialLabel={t.materialAz}
+              colorLabel={t.colorAz}
+              sizeRangeLabel={t.sizeRangeAz}
               suffix="az"
             />
 
@@ -150,6 +197,9 @@ export default async function NewProductPage({
               nameLabel={t.nameEn}
               shortLabel={t.shortDescriptionEn}
               descriptionLabel={t.descriptionEn}
+              materialLabel={t.materialEn}
+              colorLabel={t.colorEn}
+              sizeRangeLabel={t.sizeRangeEn}
               suffix="en"
             />
 
@@ -157,6 +207,9 @@ export default async function NewProductPage({
               nameLabel={t.nameRu}
               shortLabel={t.shortDescriptionRu}
               descriptionLabel={t.descriptionRu}
+              materialLabel={t.materialRu}
+              colorLabel={t.colorRu}
+              sizeRangeLabel={t.sizeRangeRu}
               suffix="ru"
             />
           </div>
@@ -182,6 +235,7 @@ function Input({
   required = false,
   placeholder,
   defaultValue,
+  hint,
 }: {
   label: string;
   name: string;
@@ -189,6 +243,7 @@ function Input({
   required?: boolean;
   placeholder?: string;
   defaultValue?: string;
+  hint?: string;
 }) {
   return (
     <label className="block">
@@ -199,16 +254,30 @@ function Input({
         required={required}
         placeholder={placeholder}
         defaultValue={defaultValue}
-        className="w-full rounded-2xl border border-white/10 bg-black/30 px-5 py-4 text-white outline-none transition focus:border-[#D6C2A8]"
+        className="w-full rounded-2xl border border-white/10 bg-black/30 px-5 py-4 text-white outline-none transition placeholder:text-white/25 focus:border-[#D6C2A8]"
       />
+      {hint ? <span className="mt-2 block text-xs text-white/38">{hint}</span> : null}
     </label>
   );
 }
 
-function Checkbox({ label, name }: { label: string; name: string }) {
+function Checkbox({
+  label,
+  name,
+  defaultChecked = false,
+}: {
+  label: string;
+  name: string;
+  defaultChecked?: boolean;
+}) {
   return (
     <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-sm text-white/70">
-      <input name={name} type="checkbox" className="h-4 w-4" />
+      <input
+        name={name}
+        type="checkbox"
+        defaultChecked={defaultChecked}
+        className="h-4 w-4"
+      />
       {label}
     </label>
   );
@@ -218,12 +287,18 @@ function TranslationBlock({
   nameLabel,
   shortLabel,
   descriptionLabel,
+  materialLabel,
+  colorLabel,
+  sizeRangeLabel,
   suffix,
 }: {
   nameLabel: string;
   shortLabel: string;
   descriptionLabel: string;
-  suffix: "az" | "en" | "ru";
+  materialLabel: string;
+  colorLabel: string;
+  sizeRangeLabel: string;
+  suffix: Locale;
 }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
@@ -242,6 +317,12 @@ function TranslationBlock({
           className="w-full rounded-2xl border border-white/10 bg-black/30 px-5 py-4 text-white outline-none transition focus:border-[#D6C2A8]"
         />
       </label>
+
+      <div className="mt-5 grid gap-5 md:grid-cols-3">
+        <Input label={materialLabel} name={`material_${suffix}`} />
+        <Input label={colorLabel} name={`color_${suffix}`} />
+        <Input label={sizeRangeLabel} name={`size_range_${suffix}`} />
+      </div>
     </div>
   );
 }

@@ -61,13 +61,10 @@ export async function createProductAction(formData: FormData) {
       currency: requiredString(formData.get("currency")) || "AZN",
       status: requiredString(formData.get("status")) || "draft",
       stock_quantity: numberValue(formData.get("stock_quantity")),
-     is_featured: formData.get("is_featured") === "on",
-featured_on_home: formData.get("featured_on_home") === "on",
-home_sort_order: numberValue(formData.get("home_sort_order")),
-is_custom_available: formData.get("is_custom_available") === "on",
-material: optionalString(formData.get("material")),
-      color: optionalString(formData.get("color")),
-      size_range: optionalString(formData.get("size_range")),
+      is_featured: formData.get("is_featured") === "on",
+      featured_on_home: formData.get("featured_on_home") === "on",
+      home_sort_order: numberValue(formData.get("home_sort_order")),
+      is_custom_available: formData.get("is_custom_available") === "on",
     })
     .select("id")
     .single();
@@ -85,6 +82,9 @@ material: optionalString(formData.get("material")),
         name: nameAz,
         short_description: optionalString(formData.get("short_description_az")),
         description: optionalString(formData.get("description_az")),
+        material: optionalString(formData.get("material_az")),
+        color: optionalString(formData.get("color_az")),
+        size_range: optionalString(formData.get("size_range_az")),
       },
       {
         product_id: product.id,
@@ -92,6 +92,9 @@ material: optionalString(formData.get("material")),
         name: nameEn,
         short_description: optionalString(formData.get("short_description_en")),
         description: optionalString(formData.get("description_en")),
+        material: optionalString(formData.get("material_en")),
+        color: optionalString(formData.get("color_en")),
+        size_range: optionalString(formData.get("size_range_en")),
       },
       {
         product_id: product.id,
@@ -99,6 +102,9 @@ material: optionalString(formData.get("material")),
         name: nameRu,
         short_description: optionalString(formData.get("short_description_ru")),
         description: optionalString(formData.get("description_ru")),
+        material: optionalString(formData.get("material_ru")),
+        color: optionalString(formData.get("color_ru")),
+        size_range: optionalString(formData.get("size_range_ru")),
       },
     ]);
 
@@ -106,6 +112,8 @@ material: optionalString(formData.get("material")),
     throw new Error(translationError.message);
   }
 
+  revalidatePath(`/${locale}`);
+  revalidatePath(`/${locale}/shop`);
   revalidatePath(`/${locale}/admin/products`);
 
   redirect({
