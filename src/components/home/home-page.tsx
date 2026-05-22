@@ -14,36 +14,34 @@ import type { Locale } from "@/i18n/routing";
 
 type HomeMessages = typeof import("@/messages/az.json").Home;
 
+type HomeProduct = {
+  id: string;
+  slug: string;
+  price: number;
+  currency: string;
+  product_translations: {
+    locale: Locale;
+    name: string;
+    short_description: string | null;
+  }[];
+  product_images: {
+    image_url: string;
+    alt_text: string | null;
+    is_primary: boolean;
+    sort_order: number;
+  }[];
+};
+
 type HomePageProps = {
   locale: Locale;
   t: HomeMessages;
+  featuredProducts: HomeProduct[];
 };
-
-const featuredProducts = [
-  {
-    name: "Oxford Classic",
-    category: "Klassik dəri",
-    price: "280 AZN",
-    image: "/images/home/product-1.jpg",
-  },
-  {
-    name: "Derby Artisan",
-    category: "Əl işi gündəlik",
-    price: "320 AZN",
-    image: "/images/home/product-2.jpg",
-  },
-  {
-    name: "Loafer Signature",
-    category: "Premium rahatlıq",
-    price: "260 AZN",
-    image: null,
-  },
-];
 
 const testimonials = [
   {
     name: "Rəşad M.",
-    text: "Ayaqqabının həm görünüşü, həm də rahatlığı premium səviyyədədir.",
+    text: "Ayaqqabının həm görünüşü, həm də rahatlığı yüksək səviyyədədir.",
   },
   {
     name: "Kamran A.",
@@ -55,7 +53,26 @@ const testimonials = [
   },
 ];
 
-export function HomePage({ locale, t }: HomePageProps) {
+function getProductTranslation(product: HomeProduct, locale: Locale) {
+  return (
+    product.product_translations.find((item) => item.locale === locale) ??
+    product.product_translations[0]
+  );
+}
+
+function getProductImage(product: HomeProduct) {
+  return (
+    product.product_images.find((item) => item.is_primary) ??
+    [...product.product_images].sort((a, b) => a.sort_order - b.sort_order)[0]
+  );
+}
+
+function isSafeImageSrc(src?: string | null) {
+  if (!src) return false;
+  return src.startsWith("/") || src.startsWith("https://");
+}
+
+export function HomePage({ locale, t, featuredProducts }: HomePageProps) {
   const services = [
     {
       icon: ShoppingBag,
@@ -79,7 +96,7 @@ export function HomePage({ locale, t }: HomePageProps) {
       <section className="relative min-h-[calc(100vh-80px)] overflow-hidden border-b border-white/10">
         <Image
           src="/images/home/hero-shoe.jpg"
-          alt="KHATT Shoes premium əl işi ayaqqabı"
+          alt="KHATT Shoes əl işi ayaqqabı"
           fill
           priority
           sizes="100vw"
@@ -202,41 +219,59 @@ export function HomePage({ locale, t }: HomePageProps) {
           </div>
 
           <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {featuredProducts.map((product) => (
-              <div
-                key={product.name}
-                className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#11100D] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition hover:-translate-y-1 hover:border-[#D8BD8A]/35"
-              >
-                <div className="relative aspect-[4/3] overflow-hidden bg-[#15130F]">
-                  {product.image ? (
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover opacity-72 transition duration-700 group-hover:scale-105 group-hover:opacity-90"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(216,189,138,0.22),rgba(255,255,255,0.04)_40%,rgba(0,0,0,0.76))]" />
-                  )}
+            {featuredProducts.length ? (
+              featuredProducts.map((product) => {
+                const translation = getProductTranslation(product, locale);
+                const image = getProductImage(product);
+                const imageUrl = isSafeImageSrc(image?.image_url)
+                  ? image?.image_url
+                  : null;
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/20 to-transparent" />
-                  <div className="absolute bottom-4 left-4 rounded-full border border-white/10 bg-black/35 px-3 py-1.5 text-xs text-white/62 backdrop-blur-md">
-                    KHATT
-                  </div>
-                </div>
+                return (
+                  <Link
+                    key={product.id}
+                    href={`/shop/${product.slug}`}
+                    locale={locale}
+                    className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#11100D] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition hover:-translate-y-1 hover:border-[#D8BD8A]/35"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden bg-[#15130F]">
+                      {imageUrl ? (
+                        <Image
+                          src={imageUrl}
+                          alt={image?.alt_text || translation?.name || product.slug}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover opacity-72 transition duration-700 group-hover:scale-105 group-hover:opacity-90"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(216,189,138,0.22),rgba(255,255,255,0.04)_40%,rgba(0,0,0,0.76))]" />
+                      )}
 
-                <div className="p-6">
-                  <p className="text-xs uppercase tracking-[0.24em] text-[#D8BD8A]">
-                    {product.category}
-                  </p>
-                  <h3 className="mt-3 text-xl font-semibold text-white">
-                    {product.name}
-                  </h3>
-                  <p className="mt-4 text-white/56">{product.price}</p>
-                </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/20 to-transparent" />
+                      <div className="absolute bottom-4 left-4 rounded-full border border-white/10 bg-black/35 px-3 py-1.5 text-xs text-white/62 backdrop-blur-md">
+                        KHATT
+                      </div>
+                    </div>
+
+                    <div className="p-6">
+                      <p className="text-xs uppercase tracking-[0.24em] text-[#D8BD8A]">
+                        {translation?.short_description || "KHATT Shoes"}
+                      </p>
+                      <h3 className="mt-3 text-xl font-semibold text-white">
+                        {translation?.name || product.slug}
+                      </h3>
+                      <p className="mt-4 text-white/56">
+                        {product.price} {product.currency}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })
+            ) : (
+              <div className="col-span-full rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 text-center text-white/55">
+                Ana səhifə üçün seçilmiş məhsul əlavə olunmayıb.
               </div>
-            ))}
+            )}
           </div>
         </Container>
       </section>
@@ -316,22 +351,22 @@ export function HomePage({ locale, t }: HomePageProps) {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-           <div className="rounded-[2rem] border border-white/10 bg-black/36 p-4 backdrop-blur-md">
-  <p className="mb-4 text-xs uppercase tracking-[0.25em] text-white/40">
-    Əvvəl
-  </p>
+            <div className="rounded-[2rem] border border-white/10 bg-black/36 p-4 backdrop-blur-md">
+              <p className="mb-4 text-xs uppercase tracking-[0.25em] text-white/40">
+                Əvvəl
+              </p>
 
-  <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-white/[0.04]">
-    <Image
-      src="/images/home/repair-before.jpg"
-      alt="Təmirdən əvvəl köhnə ayaqqabı"
-      fill
-      sizes="(max-width: 768px) 50vw, 25vw"
-      className="object-cover opacity-62 grayscale"
-    />
-    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
-  </div>
-</div>
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-white/[0.04]">
+                <Image
+                  src="/images/home/repair-before.jpg"
+                  alt="Təmirdən əvvəl köhnə ayaqqabı"
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover opacity-62 grayscale"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+              </div>
+            </div>
 
             <div className="rounded-[2rem] border border-[#D8BD8A]/30 bg-black/36 p-4 backdrop-blur-md">
               <p className="mb-4 text-xs uppercase tracking-[0.25em] text-[#D8BD8A]">

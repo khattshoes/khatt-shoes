@@ -121,9 +121,18 @@ export default async function NewProductPage({
           </div>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <Checkbox label={t.isFeatured} name="is_featured" />
-            <Checkbox label={t.isCustomAvailable} name="is_custom_available" />
-          </div>
+  <Checkbox label={t.isFeatured} name="is_featured" />
+  <Checkbox label="Ana səhifədə göstər" name="featured_on_home" />
+  <Checkbox label={t.isCustomAvailable} name="is_custom_available" />
+
+  <Input
+    label="Ana səhifə sırası"
+    name="home_sort_order"
+    type="number"
+    defaultValue="0"
+    placeholder="1"
+  />
+</div>
         </section>
 
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">

@@ -1,7 +1,5 @@
 import { hasLocale } from "next-intl";
-import { redirect } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
-import { getAdminUser } from "@/lib/auth/admin";
 import { routing } from "@/i18n/routing";
 
 export default async function AdminLayout({
@@ -15,15 +13,6 @@ export default async function AdminLayout({
 
   if (!hasLocale(routing.locales, locale)) {
     notFound();
-  }
-
-  const admin = await getAdminUser();
-
-  if (!admin) {
-    redirect({
-      href: "/admin/login",
-      locale,
-    });
   }
 
   return (

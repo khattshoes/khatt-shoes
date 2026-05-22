@@ -63,8 +63,10 @@ export async function updateProductAction(formData: FormData) {
       status: requiredString(formData.get("status")) || "draft",
       stock_quantity: numberValue(formData.get("stock_quantity")),
       is_featured: formData.get("is_featured") === "on",
-      is_custom_available: formData.get("is_custom_available") === "on",
-      material: optionalString(formData.get("material")),
+featured_on_home: formData.get("featured_on_home") === "on",
+home_sort_order: numberValue(formData.get("home_sort_order")),
+is_custom_available: formData.get("is_custom_available") === "on",
+material: optionalString(formData.get("material")),
       color: optionalString(formData.get("color")),
       size_range: optionalString(formData.get("size_range")),
     })
@@ -117,8 +119,9 @@ const translations = [
     throw new Error(translationError.message);
   }
 
-  revalidatePath(`/${locale}/admin/products`);
-  revalidatePath(`/${locale}/admin/products/${productId}`);
+  revalidatePath(`/${locale}`);
+revalidatePath(`/${locale}/admin/products`);
+revalidatePath(`/${locale}/admin/products/${productId}`);
 
   redirect({
     href: "/admin/products",
@@ -164,7 +167,8 @@ export async function deleteProductAction(formData: FormData) {
     await supabase.storage.from("product-images").remove(storagePaths);
   }
 
-  revalidatePath(`/${locale}/admin/products`);
+  revalidatePath(`/${locale}`);
+revalidatePath(`/${locale}/admin/products`);
 
   redirect({
     href: "/admin/products",

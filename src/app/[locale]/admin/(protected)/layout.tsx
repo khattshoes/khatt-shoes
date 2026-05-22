@@ -26,9 +26,5 @@ export default async function ProtectedAdminLayout({
     });
   }
 
-  return (
-    <section className="min-h-screen bg-[#0D0D0D] text-[#F5F3EF]">
-      {children}
-    </section>
-  );
+  return <>{children}</>;
 }

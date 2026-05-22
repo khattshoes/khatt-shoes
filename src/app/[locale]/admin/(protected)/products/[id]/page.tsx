@@ -65,6 +65,8 @@ type ProductRow = {
   status: string;
   stock_quantity: number;
   is_featured: boolean;
+  featured_on_home: boolean;
+  home_sort_order: number;
   is_custom_available: boolean;
   product_translations: TranslationRow[];
   product_images: ProductImageRow[];
@@ -125,8 +127,10 @@ export default async function EditProductPage({
         status,
         stock_quantity,
         is_featured,
-        is_custom_available,
-        product_translations (
+featured_on_home,
+home_sort_order,
+is_custom_available,
+product_translations (
           locale,
           name,
           short_description,
@@ -151,7 +155,7 @@ export default async function EditProductPage({
           sort_order,
           is_active
         )
-      `
+      `,
       )
       .eq("id", id)
       .single(),
@@ -176,7 +180,7 @@ export default async function EditProductPage({
   const ru = getTranslation(productRow, "ru");
 
   const sortedVariants = [...productRow.product_variants].sort(
-    (a, b) => a.sort_order - b.sort_order
+    (a, b) => a.sort_order - b.sort_order,
   );
 
   return (
@@ -209,7 +213,11 @@ export default async function EditProductPage({
               required
               defaultValue={productRow.slug}
             />
-            <Input label={t.sku} name="sku" defaultValue={productRow.sku ?? ""} />
+            <Input
+              label={t.sku}
+              name="sku"
+              defaultValue={productRow.sku ?? ""}
+            />
             <Input
               label={t.price}
               name="price"
@@ -221,7 +229,9 @@ export default async function EditProductPage({
               label={t.oldPrice}
               name="old_price"
               type="number"
-              defaultValue={productRow.old_price ? String(productRow.old_price) : ""}
+              defaultValue={
+                productRow.old_price ? String(productRow.old_price) : ""
+              }
             />
             <Input
               label={t.currency}
@@ -281,18 +291,32 @@ export default async function EditProductPage({
             />
           </div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <Checkbox
-              label={t.isFeatured}
-              name="is_featured"
-              defaultChecked={productRow.is_featured}
-            />
-            <Checkbox
-              label={t.isCustomAvailable}
-              name="is_custom_available"
-              defaultChecked={productRow.is_custom_available}
-            />
-          </div>
+         <div className="mt-6 grid gap-4 md:grid-cols-2">
+  <Checkbox
+    label={t.isFeatured}
+    name="is_featured"
+    defaultChecked={productRow.is_featured}
+  />
+
+  <Checkbox
+    label="Ana səhifədə göstər"
+    name="featured_on_home"
+    defaultChecked={productRow.featured_on_home}
+  />
+
+  <Checkbox
+    label={t.isCustomAvailable}
+    name="is_custom_available"
+    defaultChecked={productRow.is_custom_available}
+  />
+
+  <Input
+    label="Ana səhifə sırası"
+    name="home_sort_order"
+    type="number"
+    defaultValue={String(productRow.home_sort_order ?? 0)}
+  />
+</div>
         </section>
 
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
@@ -372,9 +396,21 @@ export default async function EditProductPage({
                     <td className="px-5 py-4">{variant.stock_quantity}</td>
                     <td className="px-5 py-4">
                       <form action={deleteProductVariantAction}>
-                        <input type="hidden" name="locale" value={currentLocale} />
-                        <input type="hidden" name="product_id" value={productRow.id} />
-                        <input type="hidden" name="variant_id" value={variant.id} />
+                        <input
+                          type="hidden"
+                          name="locale"
+                          value={currentLocale}
+                        />
+                        <input
+                          type="hidden"
+                          name="product_id"
+                          value={productRow.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="variant_id"
+                          value={variant.id}
+                        />
                         <button
                           type="submit"
                           className="text-red-300 transition hover:text-red-200"
@@ -470,10 +506,22 @@ export default async function EditProductPage({
                     </div>
 
                     <form action={deleteProductImageAction}>
-                      <input type="hidden" name="locale" value={currentLocale} />
-                      <input type="hidden" name="product_id" value={productRow.id} />
+                      <input
+                        type="hidden"
+                        name="locale"
+                        value={currentLocale}
+                      />
+                      <input
+                        type="hidden"
+                        name="product_id"
+                        value={productRow.id}
+                      />
                       <input type="hidden" name="image_id" value={image.id} />
-                      <input type="hidden" name="image_url" value={image.image_url} />
+                      <input
+                        type="hidden"
+                        name="image_url"
+                        value={image.image_url}
+                      />
 
                       <button
                         type="submit"
@@ -512,8 +560,17 @@ export default async function EditProductPage({
             />
           </label>
 
-          <Input label={t.altText} name="alt_text" placeholder={productRow.slug} />
-          <Input label={t.sortOrder} name="sort_order" type="number" defaultValue="0" />
+          <Input
+            label={t.altText}
+            name="alt_text"
+            placeholder={productRow.slug}
+          />
+          <Input
+            label={t.sortOrder}
+            name="sort_order"
+            type="number"
+            defaultValue="0"
+          />
           <Checkbox label={t.isPrimary} name="is_primary" />
 
           <div className="md:col-span-2">
