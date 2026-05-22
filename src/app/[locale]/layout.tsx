@@ -1,6 +1,8 @@
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
 import "../globals.css";
 
 export default async function LocaleLayout({
@@ -16,13 +18,13 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const messages = (await import(`@/messages/${locale}.json`)).default;
-
   return (
     <html lang={locale}>
-      <body>
-        <NextIntlClientProvider locale={locale} messages={messages}>
+      <body className="bg-[#0D0D0D] text-[#F5F3EF] antialiased">
+        <NextIntlClientProvider>
+          <Navbar />
           {children}
+          <Footer />
         </NextIntlClientProvider>
       </body>
     </html>

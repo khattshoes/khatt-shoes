@@ -13,5 +13,29 @@
     "repair": "Təmir",
     "about": "Haqqımızda",
     "contact": "Əlaqə"
+  },
+  "Footer": {
+    "description": "Premium əl işi ayaqqabı, fərdi tikiş və peşəkar ayaqqabı təmiri atelyesi.",
+    "pages": "Səhifələr",
+    "shop": "Mağaza",
+    "custom": "Fərdi sifariş",
+    "repair": "Təmir",
+    "contact": "Əlaqə",
+    "contactTitle": "Əlaqə",
+    "location": "Bakı, Azərbaycan"
+  },
+  "Pages": {
+    "shopTitle": "Mağaza",
+    "shopDescription": "KHATT Shoes kolleksiyasından seçilmiş premium ayaqqabı modelləri.",
+    "repairTitle": "Ayaqqabı təmiri",
+    "repairDescription": "Altlıq dəyişimi, tikiş, rəng bərpası, cilalama və tam professional ayaqqabı bərpası.",
+    "customTitle": "Fərdi sifariş",
+    "customDescription": "Öz ölçünüzə, zövqünüzə və seçdiyiniz materiala uyğun fərdi ayaqqabı hazırlanması.",
+    "aboutTitle": "Haqqımızda",
+    "aboutDescription": "KHATT Shoes Azərbaycanda açıq atelier konsepti ilə əl işi ayaqqabı və premium təmir xidmətləri təqdim edir.",
+    "galleryTitle": "İş nümunələri",
+    "galleryDescription": "Hazırladığımız, təmir etdiyimiz və bərpa etdiyimiz ayaqqabılardan seçilmiş nümunələr.",
+    "contactTitle": "Əlaqə",
+    "contactDescription": "Sifariş, təmir və fərdi ayaqqabı ilə bağlı bizimlə əlaqə saxlayın."
   }
 }

@@ -13,5 +13,29 @@
     "repair": "Repair",
     "about": "About",
     "contact": "Contact"
+  },
+  "Footer": {
+    "description": "Premium handmade shoes, bespoke footwear and professional shoe repair atelier.",
+    "pages": "Pages",
+    "shop": "Shop",
+    "custom": "Custom order",
+    "repair": "Repair",
+    "contact": "Contact",
+    "contactTitle": "Contact",
+    "location": "Baku, Azerbaijan"
+  },
+  "Pages": {
+    "shopTitle": "Shop",
+    "shopDescription": "Selected premium footwear models from the KHATT Shoes collection.",
+    "repairTitle": "Shoe repair",
+    "repairDescription": "Sole replacement, stitching, color restoration, polishing and full professional shoe restoration.",
+    "customTitle": "Custom order",
+    "customDescription": "Bespoke footwear crafted according to your size, taste and selected materials.",
+    "aboutTitle": "About us",
+    "aboutDescription": "KHATT Shoes offers handmade footwear and premium repair services in Azerbaijan with an open atelier concept.",
+    "galleryTitle": "Portfolio",
+    "galleryDescription": "Selected examples from the shoes we have crafted, repaired and restored.",
+    "contactTitle": "Contact",
+    "contactDescription": "Contact us for orders, repairs and bespoke footwear."
   }
 }
