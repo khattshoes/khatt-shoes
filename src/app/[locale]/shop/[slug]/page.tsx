@@ -122,9 +122,13 @@ export default async function ProductDetailPage({
     .eq("status", "active")
     .single();
 
-  if (error || !data) {
-    notFound();
-  }
+  if (error) {
+  throw new Error(error.message);
+}
+
+if (!data) {
+  notFound();
+}
 
   const product = data as ProductRow;
 
