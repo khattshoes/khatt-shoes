@@ -1,6 +1,6 @@
 {
   "Home": {
-    "eyebrow": "Artisanal Footwear Atelier",
+    "eyebrow": "Əl işi ayaqqabı atelyesi",
     "title": "Əl işi ayaqqabı və premium təmir atelyesi",
     "description": "KHATT Shoes fərdi ayaqqabı tikişi, ayaqqabı satışı və peşəkar bərpa xidmətlərini premium atelier təcrübəsi ilə təqdim edir.",
     "shop": "Kolleksiyaya bax",
@@ -12,6 +12,7 @@
     "custom": "Fərdi sifariş",
     "repair": "Təmir",
     "about": "Haqqımızda",
+    "gallery": "Qalereya",
     "contact": "Əlaqə"
   },
   "Footer": {

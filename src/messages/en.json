@@ -1,6 +1,6 @@
 {
   "Home": {
-    "eyebrow": "Artisanal Footwear Atelier",
+    "eyebrow": "Handmade footwear atelier",
     "title": "Handcrafted footwear and premium repair atelier",
     "description": "KHATT Shoes offers custom footwear, shoe sales and professional restoration services with a premium atelier experience.",
     "shop": "Explore collection",
@@ -12,6 +12,7 @@
     "custom": "Custom order",
     "repair": "Repair",
     "about": "About",
+    "gallery": "Gallery",
     "contact": "Contact"
   },
   "Footer": {

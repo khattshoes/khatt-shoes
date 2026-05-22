@@ -1,27 +1,27 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { LanguageSwitcher } from "./language-switcher";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
-export function Navbar() {
-  const t = useTranslations("Nav");
+export async function Navbar() {
+  const t = await getTranslations("Nav");
 
   const navItems = [
-    { label: t("home"), href: "/" },
-    { label: t("shop"), href: "/shop" },
-    { label: t("custom"), href: "/custom-order" },
-    { label: t("repair"), href: "/repair" },
-    { label: t("about"), href: "/about" },
-    { label: t("contact"), href: "/contact" },
-  ];
+    { href: "/", label: t("home") },
+    { href: "/shop", label: t("shop") },
+    { href: "/custom-order", label: t("custom") },
+    { href: "/repair", label: t("repair") },
+    { href: "/about", label: t("about") },
+    { href: "/contact", label: t("contact") },
+  ] as const;
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/45 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0D0D0D]/85 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-        <Link href="/" className="text-2xl font-semibold tracking-[0.35em]">
+        <Link href="/" className="text-xl font-semibold tracking-[0.28em] text-[#F5F3EF]">
           KHATT
         </Link>
 
-        <nav className="hidden items-center gap-7 lg:flex">
+        <nav className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -33,16 +33,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <LanguageSwitcher />
-          <a
-            href="https://wa.me/994XXXXXXXXX"
-            target="_blank"
-            className="hidden rounded-full bg-[#D6C2A8] px-5 py-2 text-sm font-semibold text-black transition hover:scale-105 md:block"
-          >
-            WhatsApp
-          </a>
-        </div>
+        <LanguageSwitcher />
       </div>
     </header>
   );
