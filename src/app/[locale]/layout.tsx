@@ -26,15 +26,15 @@ export default async function LocaleLayout({
 
   const messages = (await import(`../../messages/${locale}.json`)).default;
 
-  return (
-    <html lang={locale}>
-      <body className="bg-[#0D0D0D] text-[#F5F3EF] antialiased">
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <Navbar />
-          {children}
-          <Footer />
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
+return (
+  <html lang={locale}>
+    <body className="bg-[#0D0D0D] text-[#F5F3EF] antialiased">
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        <Navbar locale={locale} />
+        {children}
+        <Footer locale={locale} />
+      </NextIntlClientProvider>
+    </body>
+  </html>
+);
 }
