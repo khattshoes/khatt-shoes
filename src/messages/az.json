@@ -72,5 +72,21 @@
     "galleryDescription": "Hazırladığımız, təmir etdiyimiz və bərpa etdiyimiz ayaqqabılardan seçilmiş nümunələr.",
     "contactTitle": "Əlaqə",
     "contactDescription": "Sifariş, təmir və fərdi ayaqqabı ilə bağlı bizimlə əlaqə saxlayın."
-  }
+  },
+  "Shop": {
+  "eyebrow": "Kolleksiya",
+  "sectionTitle": "Seçilmiş modellər",
+  "all": "Hamısı",
+  "formal": "Klassik",
+  "casual": "Gündəlik",
+  "productOneName": "Oxford Classic",
+  "productOneCategory": "Klassik dəri",
+  "productTwoName": "Derby Artisan",
+  "productTwoCategory": "Əl işi gündəlik",
+  "productThreeName": "Loafer Signature",
+  "productThreeCategory": "Premium rahatlıq",
+  "productFourName": "Monk Strap Atelier",
+  "productFourCategory": "Premium klassik"
+}
+  
 }

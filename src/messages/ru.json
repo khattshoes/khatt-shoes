@@ -72,5 +72,20 @@
     "galleryDescription": "Избранные примеры обуви, которую мы изготовили, отремонтировали и восстановили.",
     "contactTitle": "Контакты",
     "contactDescription": "Свяжитесь с нами по вопросам заказов, ремонта и индивидуального пошива обуви."
-  }
+  },
+  "Shop": {
+  "eyebrow": "Коллекция",
+  "sectionTitle": "Избранные модели",
+  "all": "Все",
+  "formal": "Классика",
+  "casual": "Повседневные",
+  "productOneName": "Oxford Classic",
+  "productOneCategory": "Классическая кожа",
+  "productTwoName": "Derby Artisan",
+  "productTwoCategory": "Ручная работа на каждый день",
+  "productThreeName": "Loafer Signature",
+  "productThreeCategory": "Премиальный комфорт",
+  "productFourName": "Monk Strap Atelier",
+  "productFourCategory": "Премиальная классика"
+}
 }

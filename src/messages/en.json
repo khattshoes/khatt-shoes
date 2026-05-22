@@ -72,5 +72,20 @@
     "galleryDescription": "Selected examples from the shoes we have crafted, repaired and restored.",
     "contactTitle": "Contact",
     "contactDescription": "Contact us for orders, repairs and bespoke footwear."
-  }
+  },
+  "Shop": {
+  "eyebrow": "Collection",
+  "sectionTitle": "Selected models",
+  "all": "All",
+  "formal": "Formal",
+  "casual": "Casual",
+  "productOneName": "Oxford Classic",
+  "productOneCategory": "Formal leather",
+  "productTwoName": "Derby Artisan",
+  "productTwoCategory": "Handmade daily",
+  "productThreeName": "Loafer Signature",
+  "productThreeCategory": "Premium comfort",
+  "productFourName": "Monk Strap Atelier",
+  "productFourCategory": "Premium formal"
+}
 }
