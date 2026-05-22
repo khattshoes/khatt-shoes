@@ -105,6 +105,20 @@
   "repairRequests": "Заявки на ремонт",
   "repairRequestsText": "Управление заявками на ремонт",
   "customOrders": "Индивидуальные заказы",
-  "customOrdersText": "Управление индивидуальными заказами"
+  "customOrdersText": "Управление индивидуальными заказами",
+  "backToDashboard": "Назад к панели",
+"productsPageTitle": "Товары",
+"productsPageDescription": "Управление товарами KHATT Shoes.",
+"addProduct": "Добавить товар",
+"productName": "Название товара",
+"category": "Категория",
+"price": "Цена",
+"status": "Статус",
+"stock": "Склад",
+"featured": "Избранное",
+"actions": "Действия",
+"noProducts": "Пока нет товаров.",
+"yes": "Да",
+"no": "Нет"
 }
 }

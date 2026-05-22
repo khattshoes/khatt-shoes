@@ -105,6 +105,20 @@
   "repairRequests": "Repair requests",
   "repairRequestsText": "Manage repair requests",
   "customOrders": "Custom orders",
-  "customOrdersText": "Manage bespoke orders"
+  "customOrdersText": "Manage bespoke orders",
+  "backToDashboard": "Back to dashboard",
+"productsPageTitle": "Products",
+"productsPageDescription": "Manage KHATT Shoes products.",
+"addProduct": "Add product",
+"productName": "Product name",
+"category": "Category",
+"price": "Price",
+"status": "Status",
+"stock": "Stock",
+"featured": "Featured",
+"actions": "Actions",
+"noProducts": "No products yet.",
+"yes": "Yes",
+"no": "No"
 }
 }

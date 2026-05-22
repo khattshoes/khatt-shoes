@@ -105,7 +105,22 @@
   "repairRequests": "Təmir sorğuları",
   "repairRequestsText": "Təmir müraciətlərini idarə et",
   "customOrders": "Fərdi sifarişlər",
-  "customOrdersText": "Fərdi ayaqqabı sifarişlərini idarə et"
+  "customOrdersText": "Fərdi ayaqqabı sifarişlərini idarə et",
+  "backToDashboard": "İdarə panelinə qayıt",
+"productsPageTitle": "Məhsullar",
+"productsPageDescription": "KHATT Shoes məhsullarını idarə et.",
+"addProduct": "Məhsul əlavə et",
+"productName": "Məhsul adı",
+"category": "Kateqoriya",
+"price": "Qiymət",
+"status": "Status",
+"stock": "Stok",
+"featured": "Seçilmiş",
+"actions": "Əməliyyatlar",
+"noProducts": "Hələ məhsul yoxdur.",
+"yes": "Bəli",
+"no": "Xeyr"
+  
 }
   
 }
