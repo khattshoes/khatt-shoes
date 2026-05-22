@@ -168,12 +168,13 @@ export default async function ProductDetailPage({
       )
     `
     )
-    .eq("slug", slug)
+        .eq("slug", slug)
     .eq("status", "active")
-    .single();
+    .maybeSingle();
 
   if (error) {
-    throw new Error(error.message);
+    console.error("Product detail error:", error.message);
+    notFound();
   }
 
   if (!data) {
