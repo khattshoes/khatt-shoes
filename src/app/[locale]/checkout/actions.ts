@@ -2,7 +2,7 @@
 
 import { redirect } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 type CheckoutItem = {
   productId: string;
@@ -78,7 +78,7 @@ export async function createCheckoutOrderAction(formData: FormData) {
     });
   }
 
-  const supabase = await createClient();
+const supabase = createAdminClient();
 
   const variantIds = items.map((item) => item.variantId);
 

@@ -1,5 +1,7 @@
+import Image from "next/image";
 import {
   ArrowRight,
+  Check,
   Hammer,
   Scissors,
   ShoppingBag,
@@ -20,18 +22,21 @@ type HomePageProps = {
 const featuredProducts = [
   {
     name: "Oxford Classic",
-    category: "Formal leather",
+    category: "Klassik dəri",
     price: "280 AZN",
+    image: "/images/home/product-1.jpg",
   },
   {
     name: "Derby Artisan",
-    category: "Handmade daily",
+    category: "Əl işi gündəlik",
     price: "320 AZN",
+    image: "/images/home/product-2.jpg",
   },
   {
     name: "Loafer Signature",
-    category: "Premium comfort",
+    category: "Premium rahatlıq",
     price: "260 AZN",
+    image: null,
   },
 ];
 
@@ -70,24 +75,32 @@ export function HomePage({ locale, t }: HomePageProps) {
   ];
 
   return (
-    <main className="bg-[#0D0D0D] text-[#F5F3EF]">
-      <section className="relative overflow-hidden border-b border-white/10">
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(214,194,168,0.12),rgba(13,13,13,0.96)_38%,rgba(80,48,25,0.22))]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(214,194,168,0.24),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(116,72,38,0.24),transparent_38%)]" />
-        <div className="absolute left-1/2 top-20 h-64 w-64 -translate-x-1/2 rounded-full bg-[#D6C2A8]/10 blur-3xl" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0D0D0D] to-transparent" />
+    <main className="bg-[#0B0A08] text-[#FFF8EA]">
+      <section className="relative min-h-[calc(100vh-80px)] overflow-hidden border-b border-white/10">
+        <Image
+          src="/images/home/hero-shoe.jpg"
+          alt="KHATT Shoes premium əl işi ayaqqabı"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-50"
+        />
 
-        <Container className="relative grid min-h-[calc(100vh-80px)] items-center gap-12 py-20 lg:grid-cols-[1.02fr_0.98fr]">
-          <div>
-            <p className="mb-6 inline-flex rounded-full border border-[#D6C2A8]/30 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.28em] text-[#D6C2A8] backdrop-blur-md">
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,10,8,0.97)_0%,rgba(11,10,8,0.88)_38%,rgba(11,10,8,0.48)_68%,rgba(11,10,8,0.78)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(216,189,138,0.18),transparent_32rem),radial-gradient(circle_at_10%_80%,rgba(138,90,47,0.22),transparent_34rem)]" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0B0A08] to-transparent" />
+
+        <Container className="relative flex min-h-[calc(100vh-80px)] items-center py-20">
+          <div className="max-w-3xl">
+            <p className="mb-6 inline-flex rounded-full border border-[#D8BD8A]/35 bg-black/35 px-4 py-2 text-xs uppercase tracking-[0.28em] text-[#D8BD8A] backdrop-blur-md">
               {t.heroBadge}
             </p>
 
-            <h1 className="max-w-5xl text-5xl font-semibold leading-[1.05] tracking-[-0.04em] text-[#F5F3EF] md:text-7xl">
+            <h1 className="max-w-5xl text-5xl font-semibold leading-[1.02] tracking-[-0.055em] text-[#FFF8EA] sm:text-6xl md:text-7xl">
               {t.title}
             </h1>
 
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-white/65">
+            <p className="mt-7 max-w-2xl text-base leading-8 text-white/70 sm:text-lg">
               {t.description}
             </p>
 
@@ -95,7 +108,7 @@ export function HomePage({ locale, t }: HomePageProps) {
               <Link
                 href="/shop"
                 locale={locale}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#D6C2A8] px-8 py-4 text-sm font-medium text-black transition hover:bg-[#c4ad90]"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#D8BD8A] px-8 py-4 text-sm font-semibold text-black shadow-[0_18px_45px_rgba(216,189,138,0.16)] transition hover:bg-[#E7D2A8]"
               >
                 {t.shop}
                 <ArrowRight size={16} />
@@ -104,7 +117,7 @@ export function HomePage({ locale, t }: HomePageProps) {
               <Link
                 href="/custom-order"
                 locale={locale}
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/20 px-8 py-4 text-sm font-medium text-white/85 backdrop-blur-md transition hover:border-[#D6C2A8] hover:text-[#D6C2A8]"
+                className="inline-flex items-center justify-center rounded-full border border-white/18 bg-black/28 px-8 py-4 text-sm font-semibold text-white/88 backdrop-blur-md transition hover:border-[#D8BD8A] hover:text-[#D8BD8A]"
               >
                 {t.custom}
               </Link>
@@ -114,45 +127,27 @@ export function HomePage({ locale, t }: HomePageProps) {
               {[t.heroStatOne, t.heroStatTwo, t.heroStatThree].map((item) => (
                 <div
                   key={item}
-                  className="rounded-3xl border border-white/10 bg-black/25 p-4 backdrop-blur-md"
+                  className="rounded-3xl border border-white/10 bg-black/35 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md"
                 >
-                  <p className="text-sm leading-6 text-white/70">{item}</p>
+                  <p className="text-sm leading-6 text-white/72">{item}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="relative">
-            <div className="absolute -inset-8 rounded-full bg-[#D6C2A8]/20 blur-3xl" />
-
-            <div className="relative overflow-hidden rounded-[2.8rem] border border-white/10 bg-black/35 p-3 shadow-2xl backdrop-blur-md">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[2.2rem] bg-[#111]">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(214,194,168,0.30),rgba(255,255,255,0.04)_38%,rgba(0,0,0,0.78))]" />
-                <div className="absolute inset-8 rounded-[2rem] border border-[#D6C2A8]/20" />
-                <div className="absolute left-1/2 top-1/2 h-40 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D6C2A8]/20 blur-2xl" />
-
-                <div className="absolute left-1/2 top-[45%] h-24 w-72 -translate-x-1/2 -rotate-6 rounded-full border border-[#D6C2A8]/30 bg-black/25 shadow-2xl" />
-                <div className="absolute left-[52%] top-[42%] h-16 w-48 -translate-x-1/2 -rotate-6 rounded-full bg-[#D6C2A8]/10 blur-xl" />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-                <div className="absolute bottom-0 left-0 right-0 p-7">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[#D6C2A8]/30 bg-black/45 px-4 py-2 text-xs uppercase tracking-[0.22em] text-[#D6C2A8] backdrop-blur-md">
-                    <Sparkles size={14} />
-                    Handmade detail
-                  </div>
-
-                  <p className="mt-5 max-w-sm text-2xl font-semibold leading-tight text-white">
-                    Leather craft, precise repair and timeless style.
-                  </p>
-                </div>
-              </div>
+          <div className="pointer-events-none absolute bottom-8 right-5 hidden max-w-sm rounded-[2rem] border border-[#D8BD8A]/25 bg-black/38 p-5 backdrop-blur-xl lg:block">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#D8BD8A]/30 bg-black/45 px-4 py-2 text-xs uppercase tracking-[0.22em] text-[#D8BD8A]">
+              <Sparkles size={14} />
+              Əl işi detal
             </div>
+            <p className="mt-4 text-xl font-semibold leading-tight text-white">
+              Dəri ustalığı, dəqiq bərpa və zamansız stil.
+            </p>
           </div>
         </Container>
       </section>
 
-      <section className="py-24">
+      <section className="py-20 sm:py-24">
         <Container>
           <SectionHeading
             eyebrow={t.servicesEyebrow}
@@ -168,14 +163,16 @@ export function HomePage({ locale, t }: HomePageProps) {
               return (
                 <div
                   key={service.title}
-                  className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-7 transition hover:border-[#D6C2A8]/40 hover:bg-white/[0.05]"
+                  className="group rounded-[2rem] border border-white/10 bg-white/[0.03] p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition hover:-translate-y-1 hover:border-[#D8BD8A]/40 hover:bg-white/[0.05]"
                 >
-                  <div className="mb-7 inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#D6C2A8]/10 text-[#D6C2A8]">
+                  <div className="mb-7 inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#D8BD8A]/10 text-[#D8BD8A] transition group-hover:bg-[#D8BD8A] group-hover:text-black">
                     <Icon size={20} />
                   </div>
 
-                  <h3 className="text-xl font-semibold">{service.title}</h3>
-                  <p className="mt-4 text-sm leading-7 text-white/55">
+                  <h3 className="text-xl font-semibold text-white">
+                    {service.title}
+                  </h3>
+                  <p className="mt-4 text-sm leading-7 text-white/56">
                     {service.description}
                   </p>
                 </div>
@@ -185,7 +182,7 @@ export function HomePage({ locale, t }: HomePageProps) {
         </Container>
       </section>
 
-      <section className="border-y border-white/10 bg-[#080808] py-24">
+      <section className="border-y border-white/10 bg-[#080706] py-20 sm:py-24">
         <Container>
           <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
             <SectionHeading
@@ -197,7 +194,7 @@ export function HomePage({ locale, t }: HomePageProps) {
             <Link
               href="/shop"
               locale={locale}
-              className="inline-flex w-fit items-center gap-2 text-sm text-[#D6C2A8] hover:text-white"
+              className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#D8BD8A] transition hover:text-white"
             >
               {t.shop}
               <ArrowRight size={16} />
@@ -208,23 +205,35 @@ export function HomePage({ locale, t }: HomePageProps) {
             {featuredProducts.map((product) => (
               <div
                 key={product.name}
-                className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#111]"
+                className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#11100D] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition hover:-translate-y-1 hover:border-[#D8BD8A]/35"
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-[#151515]">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(214,194,168,0.22),rgba(255,255,255,0.04)_40%,rgba(0,0,0,0.72))]" />
-                  <div className="absolute inset-x-10 bottom-10 h-16 rounded-full bg-[#D6C2A8]/20 blur-xl transition duration-700 group-hover:scale-110" />
-                  <div className="absolute left-1/2 top-1/2 h-12 w-44 -translate-x-1/2 -translate-y-1/2 -rotate-6 rounded-full border border-[#D6C2A8]/25 bg-black/25" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+                <div className="relative aspect-[4/3] overflow-hidden bg-[#15130F]">
+                  {product.image ? (
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover opacity-72 transition duration-700 group-hover:scale-105 group-hover:opacity-90"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(216,189,138,0.22),rgba(255,255,255,0.04)_40%,rgba(0,0,0,0.76))]" />
+                  )}
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/20 to-transparent" />
+                  <div className="absolute bottom-4 left-4 rounded-full border border-white/10 bg-black/35 px-3 py-1.5 text-xs text-white/62 backdrop-blur-md">
+                    KHATT
+                  </div>
                 </div>
 
                 <div className="p-6">
-                  <p className="text-xs uppercase tracking-[0.24em] text-[#D6C2A8]">
+                  <p className="text-xs uppercase tracking-[0.24em] text-[#D8BD8A]">
                     {product.category}
                   </p>
-                  <h3 className="mt-3 text-xl font-semibold">
+                  <h3 className="mt-3 text-xl font-semibold text-white">
                     {product.name}
                   </h3>
-                  <p className="mt-4 text-white/55">{product.price}</p>
+                  <p className="mt-4 text-white/56">{product.price}</p>
                 </div>
               </div>
             ))}
@@ -232,19 +241,21 @@ export function HomePage({ locale, t }: HomePageProps) {
         </Container>
       </section>
 
-      <section className="py-24">
+      <section className="py-20 sm:py-24">
         <Container className="grid gap-12 lg:grid-cols-2 lg:items-center">
-          <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.03] p-3">
+          <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.03] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
             <div className="relative aspect-square overflow-hidden rounded-[2rem]">
-              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(214,194,168,0.18),rgba(255,255,255,0.04),rgba(0,0,0,0.72))]" />
-              <div className="absolute left-8 top-8 h-24 w-24 rounded-full border border-[#D6C2A8]/25" />
-              <div className="absolute bottom-16 right-10 h-36 w-36 rounded-full bg-[#D6C2A8]/10 blur-2xl" />
-              <div className="absolute left-1/2 top-1/2 h-20 w-72 -translate-x-1/2 -translate-y-1/2 -rotate-12 rounded-full border border-white/10 bg-black/30" />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6 rounded-3xl border border-white/10 bg-black/35 p-5 backdrop-blur-md">
-                <p className="text-sm leading-7 text-white/75">
-                  Material selection, handmade stitching and careful finishing.
+              <Image
+                src="/images/home/craft.jpg"
+                alt="KHATT Shoes atelye prosesi"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover opacity-78"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/68 via-black/12 to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6 rounded-3xl border border-white/10 bg-black/40 p-5 backdrop-blur-md">
+                <p className="text-sm leading-7 text-white/78">
+                  Material seçimi, əl tikişi və səliqəli final işlənməsi.
                 </p>
               </div>
             </div>
@@ -262,10 +273,12 @@ export function HomePage({ locale, t }: HomePageProps) {
                 (point) => (
                   <div
                     key={point}
-                    className="flex gap-4 rounded-2xl border border-white/10 p-5"
+                    className="flex gap-4 rounded-2xl border border-white/10 bg-white/[0.025] p-5"
                   >
-                    <span className="mt-1 h-2 w-2 rounded-full bg-[#D6C2A8]" />
-                    <p className="text-white/65">{point}</p>
+                    <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#D8BD8A]/12 text-[#D8BD8A]">
+                      <Check size={14} />
+                    </span>
+                    <p className="text-white/66">{point}</p>
                   </div>
                 )
               )}
@@ -274,8 +287,17 @@ export function HomePage({ locale, t }: HomePageProps) {
         </Container>
       </section>
 
-      <section className="border-y border-white/10 bg-[#080808] py-24">
-        <Container className="grid gap-12 lg:grid-cols-2 lg:items-center">
+      <section className="relative overflow-hidden border-y border-white/10 bg-[#080706] py-20 sm:py-24">
+        <Image
+          src="/images/home/repair.jpg"
+          alt="KHATT Shoes ayaqqabı bərpası"
+          fill
+          sizes="100vw"
+          className="object-cover opacity-18"
+        />
+        <div className="absolute inset-0 bg-[#080706]/82" />
+
+        <Container className="relative grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
             <SectionHeading
               eyebrow={t.repairEyebrow}
@@ -286,7 +308,7 @@ export function HomePage({ locale, t }: HomePageProps) {
             <Link
               href="/repair"
               locale={locale}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#D6C2A8] px-7 py-4 text-sm font-medium text-black transition hover:bg-[#c4ad90]"
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#D8BD8A] px-7 py-4 text-sm font-semibold text-black transition hover:bg-[#E7D2A8]"
             >
               {t.repairCta}
               <ArrowRight size={16} />
@@ -294,44 +316,51 @@ export function HomePage({ locale, t }: HomePageProps) {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-[2rem] border border-white/10 bg-[#151515] p-4">
-              <p className="mb-4 text-xs uppercase tracking-[0.25em] text-white/35">
-                Before
+           <div className="rounded-[2rem] border border-white/10 bg-black/36 p-4 backdrop-blur-md">
+  <p className="mb-4 text-xs uppercase tracking-[0.25em] text-white/40">
+    Əvvəl
+  </p>
+
+  <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-white/[0.04]">
+    <Image
+      src="/images/home/repair-before.jpg"
+      alt="Təmirdən əvvəl köhnə ayaqqabı"
+      fill
+      sizes="(max-width: 768px) 50vw, 25vw"
+      className="object-cover opacity-62 grayscale"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+  </div>
+</div>
+
+            <div className="rounded-[2rem] border border-[#D8BD8A]/30 bg-black/36 p-4 backdrop-blur-md">
+              <p className="mb-4 text-xs uppercase tracking-[0.25em] text-[#D8BD8A]">
+                Sonra
               </p>
-
               <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-white/[0.04]">
-                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.06),rgba(0,0,0,0.88))]" />
-                <div className="absolute inset-x-8 bottom-12 h-12 rounded-full bg-white/10 blur-xl" />
-                <div className="absolute left-1/2 top-1/2 h-14 w-44 -translate-x-1/2 -translate-y-1/2 -rotate-6 rounded-full border border-white/10 bg-black/30" />
-                <div className="absolute inset-0 bg-black/20" />
-              </div>
-            </div>
-
-            <div className="rounded-[2rem] border border-[#D6C2A8]/30 bg-[#151515] p-4">
-              <p className="mb-4 text-xs uppercase tracking-[0.25em] text-[#D6C2A8]">
-                After
-              </p>
-
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-white/[0.04]">
-                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(214,194,168,0.22),rgba(0,0,0,0.78))]" />
-                <div className="absolute inset-x-8 bottom-12 h-12 rounded-full bg-[#D6C2A8]/25 blur-xl" />
-                <div className="absolute left-1/2 top-1/2 h-14 w-44 -translate-x-1/2 -translate-y-1/2 -rotate-6 rounded-full border border-[#D6C2A8]/30 bg-black/20" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+                <Image
+                  src="/images/home/repair.jpg"
+                  alt="Bərpa edilmiş ayaqqabı"
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               </div>
             </div>
           </div>
         </Container>
       </section>
 
-      <section className="py-24">
+      <section className="py-20 sm:py-24">
         <Container>
-          <div className="rounded-[2.5rem] border border-[#D6C2A8]/20 bg-[linear-gradient(135deg,rgba(214,194,168,0.16),rgba(255,255,255,0.03))] p-8 md:p-12">
+          <div className="rounded-[2.5rem] border border-[#D8BD8A]/20 bg-[linear-gradient(135deg,rgba(216,189,138,0.16),rgba(255,255,255,0.03))] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] md:p-12">
             <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
-                <h2 className="max-w-3xl text-3xl font-semibold leading-tight md:text-5xl">
+                <h2 className="max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.035em] text-white md:text-5xl">
                   {t.customCtaTitle}
                 </h2>
-                <p className="mt-5 max-w-2xl text-white/60">
+                <p className="mt-5 max-w-2xl text-white/62">
                   {t.customCtaDescription}
                 </p>
               </div>
@@ -339,7 +368,7 @@ export function HomePage({ locale, t }: HomePageProps) {
               <Link
                 href="/custom-order"
                 locale={locale}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#D6C2A8] px-8 py-4 text-sm font-medium text-black transition hover:bg-[#c4ad90]"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#D8BD8A] px-8 py-4 text-sm font-semibold text-black transition hover:bg-[#E7D2A8]"
               >
                 {t.customCtaButton}
                 <ArrowRight size={16} />
@@ -349,7 +378,7 @@ export function HomePage({ locale, t }: HomePageProps) {
         </Container>
       </section>
 
-      <section className="border-y border-white/10 bg-[#080808] py-24">
+      <section className="border-y border-white/10 bg-[#080706] py-20 sm:py-24">
         <Container>
           <SectionHeading
             eyebrow={t.testimonialsEyebrow}
@@ -361,12 +390,12 @@ export function HomePage({ locale, t }: HomePageProps) {
             {testimonials.map((item) => (
               <div
                 key={item.name}
-                className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-7"
+                className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
               >
-                <p className="text-sm leading-7 text-white/65">
+                <p className="text-sm leading-7 text-white/66">
                   “{item.text}”
                 </p>
-                <p className="mt-6 text-sm font-medium text-[#D6C2A8]">
+                <p className="mt-6 text-sm font-semibold text-[#D8BD8A]">
                   {item.name}
                 </p>
               </div>
@@ -375,23 +404,23 @@ export function HomePage({ locale, t }: HomePageProps) {
         </Container>
       </section>
 
-      <section className="py-24">
+      <section className="py-20 sm:py-24">
         <Container>
           <div className="mx-auto max-w-4xl text-center">
-            <p className="mb-4 text-xs uppercase tracking-[0.35em] text-[#D6C2A8]">
+            <p className="mb-4 text-xs uppercase tracking-[0.35em] text-[#D8BD8A]">
               KHATT Shoes
             </p>
-            <h2 className="text-3xl font-semibold leading-tight md:text-5xl">
+            <h2 className="text-3xl font-semibold leading-tight tracking-[-0.035em] text-white md:text-5xl">
               {t.contactCtaTitle}
             </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-white/60">
+            <p className="mx-auto mt-5 max-w-2xl text-white/62">
               {t.contactCtaDescription}
             </p>
 
             <Link
               href="/contact"
               locale={locale}
-              className="mt-8 inline-flex items-center gap-2 rounded-full border border-[#D6C2A8]/40 px-8 py-4 text-sm text-[#D6C2A8] transition hover:bg-[#D6C2A8] hover:text-black"
+              className="mt-8 inline-flex items-center gap-2 rounded-full border border-[#D8BD8A]/40 px-8 py-4 text-sm font-semibold text-[#D8BD8A] transition hover:bg-[#D8BD8A] hover:text-black"
             >
               {t.contactCtaButton}
               <ArrowRight size={16} />
