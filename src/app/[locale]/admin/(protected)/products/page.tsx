@@ -7,6 +7,8 @@ import azMessages from "@/messages/az.json";
 import enMessages from "@/messages/en.json";
 import ruMessages from "@/messages/ru.json";
 
+type Locale = "az" | "en" | "ru";
+
 type ProductRow = {
   id: string;
   slug: string;
@@ -15,16 +17,31 @@ type ProductRow = {
   status: string;
   stock_quantity: number;
   is_featured: boolean;
-  categories: {
-    name_az: string;
-    name_en: string;
-    name_ru: string;
-  } | null;
+  categories:
+    | {
+        name_az: string;
+        name_en: string;
+        name_ru: string;
+      }
+    | {
+        name_az: string;
+        name_en: string;
+        name_ru: string;
+      }[]
+    | null;
   product_translations: {
     name: string;
-    locale: "az" | "en" | "ru";
+    locale: Locale;
   }[];
 };
+
+function getCategory(product: ProductRow) {
+  if (Array.isArray(product.categories)) {
+    return product.categories[0] ?? null;
+  }
+
+  return product.categories;
+}
 
 export default async function AdminProductsPage({
   params,
@@ -37,17 +54,19 @@ export default async function AdminProductsPage({
     notFound();
   }
 
+  const currentLocale = locale as Locale;
+
   const allMessages = {
     az: azMessages,
     en: enMessages,
     ru: ruMessages,
   };
 
-  const t = allMessages[locale as keyof typeof allMessages].Admin;
+  const t = allMessages[currentLocale].Admin;
 
   const supabase = await createClient();
 
-  const { data: products, error } = await supabase
+  const { data, error } = await supabase
     .from("products")
     .select(
       `
@@ -75,6 +94,8 @@ export default async function AdminProductsPage({
     throw new Error(error.message);
   }
 
+  const products = (data ?? []) as ProductRow[];
+
   return (
     <main className="mx-auto max-w-7xl px-5 py-10 sm:px-6 lg:px-8">
       <div className="mb-8 flex flex-col gap-4 border-b border-white/10 pb-8 md:flex-row md:items-end md:justify-between">
@@ -90,9 +111,7 @@ export default async function AdminProductsPage({
             {t.productsPageTitle}
           </h1>
 
-          <p className="mt-3 text-white/50">
-            {t.productsPageDescription}
-          </p>
+          <p className="mt-3 text-white/50">{t.productsPageDescription}</p>
         </div>
 
         <Link
@@ -119,19 +138,21 @@ export default async function AdminProductsPage({
             </thead>
 
             <tbody className="divide-y divide-white/10">
-              {(products as ProductRow[] | null)?.length ? (
-                (products as ProductRow[]).map((product) => {
+              {products.length ? (
+                products.map((product) => {
                   const translation =
                     product.product_translations.find(
-                      (item) => item.locale === locale
-                    ) || product.product_translations[0];
+                      (item) => item.locale === currentLocale
+                    ) ?? product.product_translations[0];
+
+                  const category = getCategory(product);
 
                   const categoryName =
-                    locale === "az"
-                      ? product.categories?.name_az
-                      : locale === "en"
-                        ? product.categories?.name_en
-                        : product.categories?.name_ru;
+                    currentLocale === "az"
+                      ? category?.name_az
+                      : currentLocale === "en"
+                        ? category?.name_en
+                        : category?.name_ru;
 
                   return (
                     <tr key={product.id} className="text-white/70">
@@ -146,9 +167,7 @@ export default async function AdminProductsPage({
                         </div>
                       </td>
 
-                      <td className="px-6 py-5">
-                        {categoryName || "-"}
-                      </td>
+                      <td className="px-6 py-5">{categoryName || "-"}</td>
 
                       <td className="px-6 py-5">
                         {product.price} {product.currency}
@@ -160,9 +179,7 @@ export default async function AdminProductsPage({
                         </span>
                       </td>
 
-                      <td className="px-6 py-5">
-                        {product.stock_quantity}
-                      </td>
+                      <td className="px-6 py-5">{product.stock_quantity}</td>
 
                       <td className="px-6 py-5">
                         {product.is_featured ? t.yes : t.no}
