@@ -4,7 +4,9 @@ import { Link } from "@/i18n/navigation";
 import { getAdminUser } from "@/lib/auth/admin";
 import { LogoutButton } from "@/components/admin/logout-button";
 import { routing } from "@/i18n/routing";
-
+import azMessages from "@/messages/az.json";
+import enMessages from "@/messages/en.json";
+import ruMessages from "@/messages/ru.json";
 export default async function AdminDashboardPage({
   params,
 }: {
@@ -17,8 +19,13 @@ export default async function AdminDashboardPage({
   }
 
   const admin = await getAdminUser();
-  const messages = (await import(`../../../../messages/${locale}.json`)).default;
-  const t = messages.Admin;
+ const allMessages = {
+  az: azMessages,
+  en: enMessages,
+  ru: ruMessages,
+};
+
+const t = allMessages[locale as keyof typeof allMessages].Admin;
 
   return (
     <main className="mx-auto max-w-7xl px-5 py-10 sm:px-6 lg:px-8">
