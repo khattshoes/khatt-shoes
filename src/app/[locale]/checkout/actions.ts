@@ -77,7 +77,6 @@ export async function createCheckoutOrderAction(formData: FormData) {
 
   const supabase = await createClient();
 
-  const productIds = items.map((item) => item.productId);
   const variantIds = items.map((item) => item.variantId);
 
   const { data: variants, error: variantsError } = await supabase
@@ -90,7 +89,9 @@ export async function createCheckoutOrderAction(formData: FormData) {
   }
 
   for (const item of items) {
-    const variant = variants?.find((variantItem) => variantItem.id === item.variantId);
+    const variant = variants?.find(
+      (variantItem) => variantItem.id === item.variantId
+    );
 
     if (
       !variant ||
@@ -148,7 +149,9 @@ export async function createCheckoutOrderAction(formData: FormData) {
   }
 
   for (const item of items) {
-    const variant = variants?.find((variantItem) => variantItem.id === item.variantId);
+    const variant = variants?.find(
+      (variantItem) => variantItem.id === item.variantId
+    );
 
     if (variant) {
       await supabase

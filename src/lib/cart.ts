@@ -24,6 +24,8 @@ export function getCartItems(): CartItem[] {
 }
 
 export function saveCartItems(items: CartItem[]) {
+  if (typeof window === "undefined") return;
+
   window.localStorage.setItem(CART_KEY, JSON.stringify(items));
   window.dispatchEvent(new Event("khatt-cart-updated"));
 }
@@ -57,9 +59,6 @@ export function removeCartItem(productId: string, variantId: string) {
   saveCartItems(items);
 }
 
-export function clearCart() {
-  saveCartItems([]);
-}
 export function updateCartItemQuantity(
   productId: string,
   variantId: string,
@@ -76,4 +75,8 @@ export function updateCartItemQuantity(
     .filter((item) => item.quantity > 0);
 
   saveCartItems(nextItems);
+}
+
+export function clearCart() {
+  saveCartItems([]);
 }

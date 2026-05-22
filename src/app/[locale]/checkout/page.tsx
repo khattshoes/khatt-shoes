@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/shared/container";
 import { CheckoutClient } from "@/components/shop/checkout-client";
 import { routing } from "@/i18n/routing";
+import { createCheckoutOrderAction } from "./actions";
 
 type Locale = "az" | "en" | "ru";
 
@@ -23,6 +24,7 @@ const labels = {
     qty: "Say",
     missingError: "Zəhmət olmasa ad, telefon və səbət məlumatlarını yoxlayın.",
     stockError: "Seçilmiş ölçüdə kifayət qədər stok yoxdur.",
+    serverError: "Sifariş yaradılarkən xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.",
   },
   en: {
     title: "Checkout",
@@ -40,6 +42,7 @@ const labels = {
     qty: "Qty",
     missingError: "Please check your name, phone and cart details.",
     stockError: "There is not enough stock for the selected size.",
+    serverError: "Something went wrong while creating your order. Please try again.",
   },
   ru: {
     title: "Оформление заказа",
@@ -57,6 +60,7 @@ const labels = {
     qty: "Кол-во",
     missingError: "Проверьте имя, телефон и данные корзины.",
     stockError: "Недостаточно товара выбранного размера.",
+    serverError: "Произошла ошибка при создании заказа. Попробуйте снова.",
   },
 };
 
@@ -83,6 +87,7 @@ export default async function CheckoutPage({
           locale={currentLocale}
           labels={labels[currentLocale]}
           error={error}
+          action={createCheckoutOrderAction}
         />
       </Container>
     </main>

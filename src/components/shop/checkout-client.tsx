@@ -9,10 +9,12 @@ import {
   updateCartItemQuantity,
   type CartItem,
 } from "@/lib/cart";
-import { createCheckoutOrderAction } from "@/app/[locale]/checkout/actions";
+
+type CheckoutAction = (formData: FormData) => void | Promise<void>;
 
 type CheckoutClientProps = {
   locale: "az" | "en" | "ru";
+  action: CheckoutAction;
   labels: {
     title: string;
     empty: string;
@@ -29,11 +31,17 @@ type CheckoutClientProps = {
     qty: string;
     missingError: string;
     stockError: string;
+    serverError: string;
   };
   error?: string;
 };
 
-export function CheckoutClient({ locale, labels, error }: CheckoutClientProps) {
+export function CheckoutClient({
+  locale,
+  action,
+  labels,
+  error,
+}: CheckoutClientProps) {
   const [items, setItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
@@ -183,7 +191,13 @@ export function CheckoutClient({ locale, labels, error }: CheckoutClientProps) {
           </p>
         ) : null}
 
-        <form action={createCheckoutOrderAction} className="mt-6 space-y-4">
+        {error === "server" ? (
+          <p className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            {labels.serverError}
+          </p>
+        ) : null}
+
+        <form action={action} className="mt-6 space-y-4">
           <input type="hidden" name="locale" value={locale} />
           <input
             type="hidden"
