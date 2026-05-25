@@ -321,51 +321,7 @@ export function HomePage({ locale, t, featuredProducts }: HomePageProps) {
         </Container>
       </section>
 
-      <section className="py-12 sm:py-14">
-        <Container>
-          <div className="grid gap-4 lg:grid-cols-2">
-            <Link
-              href="/repair"
-              locale={locale}
-              className="group rounded-[2rem] border border-white/10 bg-white/[0.035] p-7 transition hover:border-[#D8BD8A]/35"
-            >
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#D8BD8A]/10 text-[#D8BD8A]">
-                <Hammer size={19} />
-              </div>
-              <h2 className="mt-5 text-2xl font-semibold text-white">
-                {text.repairTitle}
-              </h2>
-              <p className="mt-3 max-w-xl text-sm leading-7 text-white/58">
-                {text.repairText}
-              </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#D8BD8A]">
-                {text.repairButton}
-                <ArrowRight size={16} />
-              </span>
-            </Link>
-
-            <Link
-              href="/custom-order"
-              locale={locale}
-              className="group rounded-[2rem] border border-[#D8BD8A]/20 bg-[#D8BD8A]/10 p-7 transition hover:bg-[#D8BD8A]/15"
-            >
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#D8BD8A]/15 text-[#D8BD8A]">
-                <Ruler size={19} />
-              </div>
-              <h2 className="mt-5 text-2xl font-semibold text-white">
-                {text.customTitle}
-              </h2>
-              <p className="mt-3 max-w-xl text-sm leading-7 text-white/62">
-                {text.customText}
-              </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#D8BD8A]">
-                {text.customButton}
-                <ArrowRight size={16} />
-              </span>
-            </Link>
-          </div>
-        </Container>
-      </section>
+      
     </main>
   );
 }
