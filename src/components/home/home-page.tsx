@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowRight, Hammer, Ruler, Scissors, ShoppingBag } from "lucide-react";
+import { ArrowRight, Hammer,  Scissors, ShoppingBag } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/shared/container";
 import type { Locale } from "@/i18n/routing";
