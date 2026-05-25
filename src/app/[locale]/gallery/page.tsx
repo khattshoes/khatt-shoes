@@ -1,6 +1,5 @@
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { PageHero } from "@/components/shared/page-hero";
 import { Container } from "@/components/shared/container";
 import { routing } from "@/i18n/routing";
 
@@ -22,7 +21,7 @@ export default async function GalleryPage({
 
   return (
     <main className="bg-[#0D0D0D] text-[#F5F3EF]">
-      <PageHero title={t.galleryTitle} description={t.galleryDescription} />
+     
 
       <section className="py-20">
         <Container>
