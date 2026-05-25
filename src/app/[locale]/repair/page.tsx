@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { PageHero } from "@/components/shared/page-hero";
 import { Container } from "@/components/shared/container";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -202,11 +201,7 @@ export default async function RepairPage({
 
   return (
     <main className="bg-[#0B0A08] text-[#FFF8EA]">
-      <PageHero
-        eyebrow={t.eyebrow}
-        title={pageText.repairTitle}
-        description={pageText.repairDescription}
-      />
+      
 
       <section className="py-14 sm:py-20">
         <Container>

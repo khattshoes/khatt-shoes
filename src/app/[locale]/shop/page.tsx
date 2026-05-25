@@ -2,7 +2,6 @@ import Image from "next/image";
 import { ArrowRight, SlidersHorizontal, Sparkles } from "lucide-react";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { PageHero } from "@/components/shared/page-hero";
 import { Container } from "@/components/shared/container";
 import { createClient } from "@/lib/supabase/server";
 import { routing } from "@/i18n/routing";
@@ -223,11 +222,7 @@ export default async function ShopPage({
 
   return (
     <main className="bg-[#0B0A08] text-[#FFF8EA]">
-      <PageHero
-        eyebrow={shop.eyebrow}
-        title={pages.shopTitle}
-        description={pages.shopDescription}
-      />
+     
 
       <section className="py-14 sm:py-18">
         <Container>

@@ -185,14 +185,7 @@ export function HomePage({ locale, t, featuredProducts }: HomePageProps) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
 
-                <div className="absolute bottom-5 left-5 right-5 rounded-[1.4rem] border border-white/10 bg-black/42 p-4 backdrop-blur-md">
-                  <p className="text-xs uppercase tracking-[0.26em] text-[#D8BD8A]">
-                    KHATT Shoes
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-white/70">
-                    {t.heroBadge}
-                  </p>
-                </div>
+               
               </div>
             </div>
           </div>
