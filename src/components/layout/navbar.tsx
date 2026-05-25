@@ -12,20 +12,45 @@ type NavbarProps = {
 type NavItem = {
   href: "/" | "/shop" | "/custom-order" | "/repair" | "/about" | "/contact";
   label: string;
+  mobileLabel: string;
+};
+
+const shortDesktopLabels = {
+  az: {
+    custom: "Fərdi sifariş",
+    about: "Haqqımızda",
+    customButton: "Fərdi sifariş",
+  },
+  en: {
+    custom: "Custom",
+    about: "About",
+    customButton: "Custom order",
+  },
+  ru: {
+    custom: "Заказ",
+    about: "О нас",
+    customButton: "Заказать",
+  },
 };
 
 export async function Navbar({ locale }: NavbarProps) {
   const messages = (await import(`../../messages/${locale}.json`)).default;
   const t = messages.Nav;
+  const short = shortDesktopLabels[locale];
 
   const navItems: readonly NavItem[] = [
-    { href: "/", label: t.home },
-    { href: "/shop", label: t.shop },
-    { href: "/custom-order", label: t.custom },
-    { href: "/repair", label: t.repair },
-    { href: "/about", label: t.about },
-    { href: "/contact", label: t.contact },
+    { href: "/", label: t.home, mobileLabel: t.home },
+    { href: "/shop", label: t.shop, mobileLabel: t.shop },
+    { href: "/custom-order", label: short.custom, mobileLabel: t.custom },
+    { href: "/repair", label: t.repair, mobileLabel: t.repair },
+    { href: "/about", label: short.about, mobileLabel: t.about },
+    { href: "/contact", label: t.contact, mobileLabel: t.contact },
   ];
+
+  const mobileNavItems = navItems.map((item) => ({
+    href: item.href,
+    label: item.mobileLabel,
+  }));
 
   const cartLabel =
     locale === "az" ? "Səbət" : locale === "en" ? "Cart" : "Корзина";
@@ -38,7 +63,7 @@ export async function Navbar({ locale }: NavbarProps) {
             href="/"
             locale={locale}
             aria-label="KHATT Shoes Atelier"
-            className="group inline-flex min-w-fit items-center gap-3"
+            className="group inline-flex min-w-[220px] shrink-0 items-center gap-3"
           >
             <span className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-[#D8BD8A]/35 bg-[#D8BD8A]/10 text-sm font-semibold tracking-[0.18em] text-[#D8BD8A] shadow-[0_0_35px_rgba(216,189,138,0.12)]">
               KH
@@ -57,21 +82,21 @@ export async function Navbar({ locale }: NavbarProps) {
 
           <nav
             aria-label="Primary navigation"
-            className="hidden items-center rounded-full border border-white/10 bg-white/[0.035] px-2 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] lg:flex"
+            className="hidden h-14 items-center justify-center rounded-full border border-white/10 bg-white/[0.035] px-2 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] lg:flex"
           >
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 locale={locale}
-                className="rounded-full px-4 py-2.5 text-sm font-medium text-white/70 transition hover:bg-white/[0.055] hover:text-[#D8BD8A]"
+                className="flex h-10 items-center justify-center rounded-full px-4 text-center text-sm font-medium leading-none text-white/70 transition hover:bg-white/[0.055] hover:text-[#D8BD8A]"
               >
                 {item.label}
               </Link>
             ))}
           </nav>
 
-          <div className="hidden min-w-fit items-center gap-3 lg:flex">
+          <div className="hidden min-w-[330px] shrink-0 items-center justify-end gap-3 lg:flex">
             <LanguageSwitcher />
 
             <CartNavLink locale={locale} label={cartLabel} />
@@ -79,15 +104,15 @@ export async function Navbar({ locale }: NavbarProps) {
             <Link
               href="/custom-order"
               locale={locale}
-              className="inline-flex items-center justify-center rounded-full border border-[#D8BD8A]/40 bg-[#D8BD8A] px-5 py-2.5 text-sm font-semibold text-black shadow-[0_14px_36px_rgba(216,189,138,0.14)] transition hover:bg-[#E7D2A8]"
+              className="inline-flex h-12 min-w-[140px] items-center justify-center rounded-full border border-[#D8BD8A]/40 bg-[#D8BD8A] px-6 text-center text-sm font-semibold leading-none text-black shadow-[0_14px_36px_rgba(216,189,138,0.14)] transition hover:bg-[#E7D2A8]"
             >
-              {t.custom}
+              {short.customButton}
             </Link>
           </div>
 
           <div className="flex items-center gap-3 lg:hidden">
             <CartNavLink locale={locale} label={cartLabel} />
-            <MobileMenu locale={locale} navItems={navItems} />
+            <MobileMenu locale={locale} navItems={mobileNavItems} />
           </div>
         </div>
       </Container>
