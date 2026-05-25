@@ -207,6 +207,23 @@ export default async function AdminDashboardPage({
           title={t.customOrders}
           text={t.customOrdersText}
         />
+        <AdminCard
+  href="/admin/contact-messages"
+  title={
+    currentLocale === "az"
+      ? "Əlaqə müraciətləri"
+      : currentLocale === "ru"
+        ? "Сообщения"
+        : "Contact messages"
+  }
+  text={
+    currentLocale === "az"
+      ? "Contact formdan gələn müraciətlərə bax"
+      : currentLocale === "ru"
+        ? "Просмотр сообщений из контактной формы"
+        : "View messages from the contact form"
+  }
+/>
       </div>
 
       <section className="mt-10">
