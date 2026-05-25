@@ -17,6 +17,7 @@ type Locale = "az" | "en" | "ru";
 
 const content = {
   az: {
+    
     title: "Əlaqə",
     branchTitle: "KHATT Shoes Atelye",
     address: "Kövkəb Səfərəliyeva 17, Bakı",
