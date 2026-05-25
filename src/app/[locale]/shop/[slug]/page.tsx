@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { ArrowLeft, CheckCircle2, PackageCheck, Ruler, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  PackageCheck,
+  Ruler,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
@@ -52,16 +59,17 @@ type ProductRow = {
 
 const labels = {
   az: {
-    back: "Kolleksiyaya qayıdın",
+    back: "Kolleksiyaya qayıt",
     material: "Material",
     color: "Rəng",
+    size: "Ölçü",
     sizeRange: "Ölçü aralığı",
-    stock: "Mövcud say",
-    order: "Checkout-a keçin",
+    stock: "Anbar",
+    order: "Sifarişi tamamla",
     inStock: "Mövcuddur",
-    outOfStock: "Hazırda mövcud deyil",
-    favorite: "Favorit",
-    addToCart: "Səbətə əlavə edin",
+    outOfStock: "Satışda yoxdur",
+    favorite: "Seçilmişlərə əlavə et",
+    addToCart: "Səbətə əlavə et",
     selectSize: "Zəhmət olmasa ölçü seçin.",
     added: "Məhsul səbətə əlavə edildi.",
     delivery: "Sifariş prosesi",
@@ -83,18 +91,20 @@ const labels = {
     noteText:
       "Model, ölçü və materialla bağlı sualınız varsa, sifarişdən əvvəl bizimlə əlaqə saxlaya bilərsiniz.",
     customAvailable: "Bu model üzrə fərdi sifariş mümkündür",
-    consult: "Məsləhət alın",
+    consult: "Məsləhət al",
+    seoFallback: "KHATT Shoes əl işi ayaqqabı və peşəkar bərpa atelyesi.",
   },
   en: {
     back: "Back to collection",
     material: "Material",
     color: "Color",
+    size: "Size",
     sizeRange: "Size range",
-    stock: "Available stock",
-    order: "Go to checkout",
+    stock: "Stock",
+    order: "Complete order",
     inStock: "In stock",
-    outOfStock: "Currently unavailable",
-    favorite: "Favorite",
+    outOfStock: "Out of stock",
+    favorite: "Add to favorites",
     addToCart: "Add to cart",
     selectSize: "Please select a size.",
     added: "Product added to cart.",
@@ -115,20 +125,22 @@ const labels = {
       "Protect leather shoes from moisture and direct sunlight. Use a soft cloth and suitable care products.",
     noteTitle: "Before ordering",
     noteText:
-      "If you have questions about model, size or material, you can contact us before ordering.",
-    customAvailable: "Made-to-order option is available for this model",
+      "If you have questions about the model, size or material, you can contact us before ordering.",
+    customAvailable: "Custom order is available for this model",
     consult: "Get advice",
+    seoFallback: "KHATT Shoes handmade footwear and professional repair atelier.",
   },
   ru: {
     back: "Вернуться к коллекции",
     material: "Материал",
     color: "Цвет",
-    sizeRange: "Размеры",
-    stock: "В наличии",
-    order: "Перейти к оформлению",
+    size: "Размер",
+    sizeRange: "Размерный ряд",
+    stock: "Остаток",
+    order: "Оформить заказ",
     inStock: "В наличии",
-    outOfStock: "Сейчас недоступно",
-    favorite: "Избранное",
+    outOfStock: "Нет в наличии",
+    favorite: "Добавить в избранное",
     addToCart: "Добавить в корзину",
     selectSize: "Пожалуйста, выберите размер.",
     added: "Товар добавлен в корзину.",
@@ -152,6 +164,7 @@ const labels = {
       "Если у вас есть вопросы по модели, размеру или материалу, вы можете связаться с нами до заказа.",
     customAvailable: "Для этой модели доступен индивидуальный заказ",
     consult: "Получить консультацию",
+    seoFallback: "KHATT Shoes — обувь ручной работы и профессиональный ремонт.",
   },
 };
 
@@ -249,7 +262,12 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: "Product not found | KHATT Shoes",
+      title:
+        currentLocale === "az"
+          ? "Məhsul tapılmadı | KHATT Shoes"
+          : currentLocale === "ru"
+            ? "Товар не найден | KHATT Shoes"
+            : "Product not found | KHATT Shoes",
     };
   }
 
@@ -258,7 +276,7 @@ export async function generateMetadata({
   const description =
     translation?.short_description ||
     translation?.description ||
-    "KHATT Shoes əl işi ayaqqabı və bərpa atelyesi.";
+    labels[currentLocale].seoFallback;
 
   const imageUrl = getSortedImages(product)[0]?.image_url;
 
@@ -336,7 +354,7 @@ export default async function ProductDetailPage({
     description:
       translation?.description ||
       translation?.short_description ||
-      "KHATT Shoes əl işi ayaqqabı və bərpa atelyesi.",
+      l.seoFallback,
     brand: {
       "@type": "Brand",
       name: "KHATT Shoes",
@@ -505,7 +523,7 @@ export default async function ProductDetailPage({
                     }}
                     variants={product.product_variants}
                     labels={{
-                      size: l.sizeRange,
+                      size: l.size,
                       addToCart: l.addToCart,
                       selectSize: l.selectSize,
                       outOfStock: l.outOfStock,
